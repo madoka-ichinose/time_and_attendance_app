@@ -16,6 +16,13 @@ services:
         volumes:
             - ./src:/var/www/
 
+    mailhog:
+        image: mailhog/mailhog
+        container_name: mailhog
+        ports:
+            - "1025:1025"  # SMTP用
+            - "8025:8025"  # Web UI用
+
     mysql:
         image: mysql:8.0.26
         environment:

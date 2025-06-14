@@ -21,6 +21,10 @@
     cursor: pointer;
 }
 
+.verify-box p {
+    margin-bottom: 30px;
+}
+
 .resend-link {
     display: inline-block;
     margin-top: 1rem;

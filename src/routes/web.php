@@ -4,8 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth','verified')->group(function () {
     Route::get('/', [AttendanceController::class, 'showStartScreen'])->name('attendance.show');
     Route::post('/attendance/start', [AttendanceController::class, 'start'])->name('attendance.start');
     Route::post('/attendance/end', [AttendanceController::class, 'end'])->name('attendance.end');
@@ -18,7 +19,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/email/verify', function () {
-    return view('auth.verify-email');
+    return view('auth.verify');
 })->middleware('auth')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
