@@ -40,7 +40,7 @@
         </li>
     @else
         {{-- 通常のナビゲーション --}}
-        <li><a class="header-nav__link" href="/attendance">勤怠</a></li>
+        <li><a class="header-nav__link" href="/">勤怠</a></li>
         <li><a class="header-nav__link" href="/attendance/list">勤怠一覧</a></li>
         <li><a class="header-nav__link" href="/application">申請</a></li>
         <li>

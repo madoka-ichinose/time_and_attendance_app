@@ -150,7 +150,74 @@ class AttendanceController extends Controller
 
     public function showEndScreen()
     {
-    return view('attendance.end');
+        return view('attendance.end');
+    }
+
+    public function index($year = null, $month = null)
+    {
+    $user = auth()->user();
+    $today = Carbon::today();
+
+    // 現在の月を取得（パラメータがない場合は今日）
+    $targetDate = Carbon::createFromDate($year ?? $today->year, $month ?? $today->month, 1);
+
+    // 前月・翌月の計算
+    $prevMonth = $targetDate->copy()->subMonth();
+    $nextMonth = $targetDate->copy()->addMonth();
+
+    // 対象月の全日付を取得
+    $startOfMonth = $targetDate->copy()->startOfMonth();
+    $endOfMonth = $targetDate->copy()->endOfMonth();
+
+    // 対象月の勤怠記録を取得
+    $attendancesRaw = Attendance::with('breaks')
+        ->where('user_id', $user->id)
+        ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+        ->get()
+        ->keyBy(function ($item) {
+            return Carbon::parse($item->work_date)->format('Y-m-d');
+        });
+
+    // カレンダーのように全日分ループ
+    $attendances = [];
+    for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
+        $record = $attendancesRaw->get($date->format('Y-m-d'));
+        
+        $attendances[] = [
+            'display_date' => $date->locale('ja')->isoFormat('MM/DD（dd）'),
+            'date' => $date->format('Y-m-d'),
+            'clock_in' => isset($record) && $record->clock_in ? Carbon::parse($record->clock_in)->format('H:i') : '--:--',
+            'clock_out' => isset($record) && $record->clock_out ? Carbon::parse($record->clock_out)->format('H:i') : '--:--',
+            'break_time' => isset($record) ? $this->formatBreakTime($record->breaks) : '--:--',
+            'work_time' => isset($record) && $record->total_work_minutes ? $this->formatMinutes($record->total_work_minutes) : '--:--',
+        ];
+        
+    }
+
+    return view('attendance.list', [
+        'attendances' => $attendances,
+        'currentMonth' => $targetDate->format('Y/m'),
+        'prevMonthUrl' => route('attendance.list', ['year' => $prevMonth->year, 'month' => $prevMonth->month]),
+        'nextMonthUrl' => route('attendance.list', ['year' => $nextMonth->year, 'month' => $nextMonth->month]),
+    ]);
+    }
+
+// 勤務・休憩時間の整形メソッド
+    private function formatMinutes($minutes)
+    {
+    $hours = floor($minutes / 60);
+    $mins = $minutes % 60;
+    return sprintf('%02d:%02d', $hours, $mins);
+    }
+
+    private function formatBreakTime($breaks)
+    {
+    $total = $breaks->sum(function ($break) {
+        return $break->end_time && $break->start_time
+            ? Carbon::parse($break->end_time)->diffInMinutes($break->start_time)
+            : 0;
+    });
+    return $this->formatMinutes($total);
     }
 
 }
