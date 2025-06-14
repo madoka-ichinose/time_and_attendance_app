@@ -6,6 +6,11 @@
 
 @section('content')
 <div class="attendance-container">
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
  
   <p class="status">出勤中</p>
   <p class="date">{{ now()->format('Y年n月j日(D)') }}</p>

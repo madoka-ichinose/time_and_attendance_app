@@ -121,3 +121,61 @@ body {
     color: #000;
     border: 1px solid #000;
 }
+
+.status.rest {
+    background-color: #ddd;
+    color: #555;
+    padding: 5px 10px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.btn-return {
+    background-color: white;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    padding: 10px 30px;
+    border-radius: 10px;
+}
+
+.status.end {
+    background-color: #999;
+}
+
+.message {
+    color: #000;
+    font-weight: bold;
+}
+
+.alert {
+    color: red;
+}
+
+@media screen and (max-width: 850px) and (min-width: 768px) {
+    .attendance-time {
+        font-size: 36px;
+    }
+
+    .attendance-buttons button {
+        font-size: 18px;
+        padding: 14px;
+    }
+}
+
+/* --- PC対応 (1400-1540px) --- */
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .attendance-container {
+        max-width: 600px;
+    }
+
+    .attendance-time {
+        font-size: 52px;
+    }
+
+    .attendance-buttons button {
+        font-size: 22px;
+        padding: 18px;
+    }
+}

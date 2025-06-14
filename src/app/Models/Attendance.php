@@ -18,4 +18,8 @@ class Attendance extends Model
     return $this->hasMany(BreakTime::class);
     }
 
+    protected $fillable = [
+        'user_id', 'work_date', 'clock_in', 'clock_out', 'note', 'total_work_minutes'
+    ];
+
 }
