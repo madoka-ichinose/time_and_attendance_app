@@ -33,7 +33,13 @@
                     <td>{{ $attendance['clock_out'] }}</td>
                     <td>{{ $attendance['break_time'] }}</td>
                     <td>{{ $attendance['work_time'] }}</td>
-                    <td><a class="attendance__detail" href="/attendance/detail">詳細</a></td>
+                    <td>
+                        @if (!is_null($attendance['id']))
+                        <a href="{{ route('attendance.detail', ['id' => $attendance['id']]) }}" class="attendance__detail">詳細</a>
+                        @else
+                        <span style="color: #ccc;">詳細</span>
+                        @endif
+                    </td>
                 </tr>
             @endforeach
         </tbody>

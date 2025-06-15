@@ -16,6 +16,9 @@ Route::middleware('auth','verified')->group(function () {
     Route::get('/attendance/working', [AttendanceController::class, 'showWorkingScreen'])->name('attendance.working');
     Route::get('/attendance/end-screen', [AttendanceController::class, 'showEndScreen'])->name('attendance.end.screen');
     Route::get('/attendance/list{year?}/{month?}', [AttendanceController::class,'index'])->name('attendance.list');
+    Route::get('/attendance/detail/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+    Route::post('/attendance/request/{id}', [AttendanceController::class, 'submitRequest'])->name('attendance.request');
+    Route::get('/request/list', [RequestController::class, 'index'])->name('request.list');
 
 });
 

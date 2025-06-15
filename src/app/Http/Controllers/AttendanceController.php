@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\BreakTime;
+use App\Models\RequestApplication;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
@@ -184,6 +186,7 @@ class AttendanceController extends Controller
         $record = $attendancesRaw->get($date->format('Y-m-d'));
         
         $attendances[] = [
+            'id' => $record->id ?? null,
             'display_date' => $date->locale('ja')->isoFormat('MM/DD（dd）'),
             'date' => $date->format('Y-m-d'),
             'clock_in' => isset($record) && $record->clock_in ? Carbon::parse($record->clock_in)->format('H:i') : '--:--',
@@ -219,5 +222,58 @@ class AttendanceController extends Controller
     });
     return $this->formatMinutes($total);
     }
+
+    public function detail($id)
+    {
+    $attendance = Attendance::with('breaks')->findOrFail($id);
+    $user = Auth::user();
+
+    return view('attendance.detail', compact('attendance', 'user'));
+    }
+
+    public function submitRequest(Request $request, $id)
+    {
+        $attendance = Attendance::with('breaks')->findOrFail($id);
+
+    // 時刻の更新
+        if ($request->filled('clock_in')) {
+        $attendance->clock_in = \Carbon\Carbon::parse($attendance->work_date . ' ' . $request->input('clock_in'));
+    }
+
+        if ($request->filled('clock_out')) {
+        $attendance->clock_out = \Carbon\Carbon::parse($attendance->work_date . ' ' . $request->input('clock_out'));
+    }
+
+        $attendance->note = $request->input('note');
+        $attendance->save();
+
+    // 休憩時間更新
+        if ($request->has('breaks')) {
+        foreach ($request->input('breaks') as $breakId => $times) {
+            $break = \App\Models\BreakTime::find($breakId);
+            if ($break && $break->attendance_id == $attendance->id) {
+                if (!empty($times['start'])) {
+                    $break->start_time = \Carbon\Carbon::parse($attendance->work_date . ' ' . $times['start']);
+                }
+                if (!empty($times['end'])) {
+                    $break->end_time = \Carbon\Carbon::parse($attendance->work_date . ' ' . $times['end']);
+                }
+                $break->save();
+            }
+        }
+    }
+
+    // 申請記録作成
+    \App\Models\RequestApplication::create([
+        'attendance_id' => $attendance->id,
+        'user_id' => auth()->id(),
+        'status' => '承認待ち',
+        'reason' => $attendance->note,
+        'applied_at' => Carbon::now(),
+    ]);
+
+    return redirect()->route('request.list');
+}
+
 
 }
