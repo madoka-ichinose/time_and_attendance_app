@@ -8,6 +8,8 @@ use App\Models\Attendance;
 use App\Models\BreakTime;
 use App\Models\RequestApplication;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AttendanceRequest;
+
 
 class AttendanceController extends Controller
 {
@@ -231,7 +233,7 @@ class AttendanceController extends Controller
     return view('attendance.detail', compact('attendance', 'user'));
     }
 
-    public function submitRequest(Request $request, $id)
+    public function submitRequest(AttendanceRequest $request, $id)
     {
         $attendance = Attendance::with('breaks')->findOrFail($id);
 

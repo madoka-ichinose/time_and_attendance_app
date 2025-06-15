@@ -299,6 +299,37 @@ a.attendance__detail:hover {
     h1 {
         font-size: 20px;
     }
+
+        .attendance-detail-box {
+            width: 90%;
+            padding: 20px;
+        }
+    
+        .attendance-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+    
+        .attendance-detail-table th,
+        .attendance-detail-table td {
+            padding: 10px;
+            font-size: 14px;
+        }
+    
+        .attendance-detail-button {
+            text-align: center;
+        }
+    
+        .attendance-detail-button button {
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+    
+        input[type="time"],
+        input[type="text"] {
+            width: 100%;
+            font-size: 14px;
+        }
 }
 
 /* --- PC対応 (1400-1540px) --- */
@@ -315,4 +346,23 @@ a.attendance__detail:hover {
         font-size: 22px;
         padding: 18px;
     }
+
+        .attendance-detail-box {
+            width: 50%;
+        }
+    
+        .attendance-title {
+            font-size: 22px;
+        }
+    
+        .attendance-detail-table th,
+        .attendance-detail-table td {
+            font-size: 15px;
+            padding: 14px;
+        }
+    
+        .attendance-detail-button button {
+            font-size: 18px;
+            padding: 12px 28px;
+        }
 }

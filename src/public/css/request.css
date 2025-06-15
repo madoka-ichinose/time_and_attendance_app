@@ -1,0 +1,68 @@
+/* 全体レイアウト */
+.request-form {
+    max-width: 900px;
+    margin: 40px auto;
+    background-color: #f7f7f7;
+    padding: 40px;
+    border-radius: 10px;
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+/* タイトル */
+.request-form h2 {
+    font-size: 24px;
+    font-weight: bold;
+    border-left: 5px solid #000;
+    padding-left: 10px;
+    margin-bottom: 30px;
+}
+
+/* タブ切り替え */
+.request-form div>a {
+    margin-right: 30px;
+    font-size: 16px;
+    text-decoration: none;
+    color: #888;
+    font-weight: bold;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.request-form div>a.active {
+    color: #000;
+    border-bottom: 2px solid #000;
+}
+
+/* テーブル */
+.request-form table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* ヘッダー */
+.request-form table thead {
+    background-color: white;
+}
+
+.request-form th,
+.request-form td {
+    text-align: center;
+    padding: 14px;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 詳細リンク */
+.request-form td a {
+    color: #000;
+    font-weight: bold;
+}
+
+/* 反応効果 */
+.request-form td a:hover {
+    color: #007bff;
+}

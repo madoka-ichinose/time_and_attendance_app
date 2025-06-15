@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\RequestController;
 
 Route::middleware('auth','verified')->group(function () {
     Route::get('/', [AttendanceController::class, 'showStartScreen'])->name('attendance.show');

@@ -1,12 +1,15 @@
 @extends('layouts.app')
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/request.css') }}">
+
 @section('content')
 <div class="request-form">
 <h2>申請一覧</h2>
 
 <div>
-    <a href="?status=waiting" {{ request('status') == 'waiting' ? 'class=active' : '' }}>承認待ち</a>
-    <a href="?status=approved" {{ request('status') == 'approved' ? 'class=active' : '' }}>承認済み</a>
+<a href="?status=waiting" class="{{ request('status') == 'waiting' ? 'active' : '' }}">承認待ち</a>
+<a href="?status=approved" class="{{ request('status') == 'approved' ? 'active' : '' }}">承認済み</a>
 </div>
 
 <table>
@@ -25,7 +28,7 @@
         <tr>
             <td>{{ $request->status }}</td>
             <td>{{ $request->user->name }}</td>
-            <td>{{ $request->attendance->date->format('Y年m月d日') }}</td>
+            <td>{{ \Carbon\Carbon::parse($request->attendance->work_date)->format('Y/m/d') }}</td>
             <td>{{ $request->reason }}</td>
             <td>{{ \Carbon\Carbon::parse($request->applied_at)->format('Y/m/d') }}</td>
             <td><a href="{{ route('attendance.detail', ['id' => $request->attendance->id]) }}">詳細</a></td>

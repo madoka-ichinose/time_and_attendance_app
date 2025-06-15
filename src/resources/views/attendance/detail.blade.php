@@ -46,6 +46,16 @@
             </tr>
         </table>
 
+        @if ($errors->any())
+        <div class="alert">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        </div>
+        @endif
+
         <div class="attendance-detail-button">
             <button type="submit">修正</button>
         </div>
