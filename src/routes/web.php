@@ -6,9 +6,20 @@ use App\Http\Controllers\AttendanceController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegisterController;
+
+// 一般ユーザー用ログイン画面
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
 
 Route::middleware('auth','verified')->group(function () {
-    Route::get('/', [AttendanceController::class, 'showStartScreen'])->name('attendance.show');
+    Route::get('/attendance', [AttendanceController::class, 'showStartScreen'])->name('attendance.show');
     Route::post('/attendance/start', [AttendanceController::class, 'start'])->name('attendance.start');
     Route::post('/attendance/end', [AttendanceController::class, 'end'])->name('attendance.end');
     Route::get('/attendance/break', [AttendanceController::class, 'showBreakScreen'])->name('attendance.break.screen');
@@ -17,7 +28,7 @@ Route::middleware('auth','verified')->group(function () {
     Route::get('/attendance/working', [AttendanceController::class, 'showWorkingScreen'])->name('attendance.working');
     Route::get('/attendance/end-screen', [AttendanceController::class, 'showEndScreen'])->name('attendance.end.screen');
     Route::get('/attendance/list{year?}/{month?}', [AttendanceController::class,'index'])->name('attendance.list');
-    Route::get('/attendance/detail/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+    Route::get('/attendance/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
     Route::post('/attendance/request/{id}', [AttendanceController::class, 'submitRequest'])->name('attendance.request');
     Route::get('/request/list', [RequestController::class, 'index'])->name('request.list');
 
@@ -30,7 +41,7 @@ Route::get('/email/verify', function () {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
 
-    return redirect('/');
+    return redirect('/attendance');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
@@ -38,3 +49,11 @@ Route::post('/email/verification-notification', function (Request $request) {
 
     return back()->with('message', '認証メールを再送信しました。');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+
+Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminController::class, 'login']);
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/attendance/list', [AdminController::class, 'index'])->name('admin.attendance.list');
+});

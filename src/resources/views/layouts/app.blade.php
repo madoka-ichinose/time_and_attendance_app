@@ -18,20 +18,21 @@
 
 <body>
 <header class="header">
-  <a class="header__logo" href="/">
+  <a class="header__logo" href="/attendance">
     <img src="{{ asset('storage/images/logo.svg') }}" alt="COACHTECH">
   </a>
   <nav class="header__nav">
     <ul>
     @if (Auth::check())
     @php
-        $routeName = Route::currentRouteName();
+        $user = Auth::user();
     @endphp
 
-    @if ($routeName === 'attendance.end.screen')
-        {{-- 退勤後のナビゲーション --}}
-        <li><a class="header-nav__link" href="/attendance/list">今月の出勤一覧</a></li>
-        <li><a class="header-nav__link" href="/application">申請一覧</a></li>
+    @if ($user->role === 'admin')
+        {{-- 管理者用ナビゲーション --}}
+        <li><a class="header-nav__link" href="/admin/attendance/list">勤怠一覧</a></li>
+        <li><a class="header-nav__link" href="/admin/staff/list">スタッフ一覧</a></li>
+        <li><a class="header-nav__link" href="/stamp_correction_request/list">申請一覧</a></li>
         <li>
             <form action="/logout" method="post">
                 @csrf
@@ -39,18 +40,34 @@
             </form>
         </li>
     @else
-        {{-- 通常のナビゲーション --}}
-        <li><a class="header-nav__link" href="/">勤怠</a></li>
-        <li><a class="header-nav__link" href="/attendance/list">勤怠一覧</a></li>
-        <li><a class="header-nav__link" href="/request/list">申請</a></li>
-        <li>
-            <form action="/logout" method="post">
-                @csrf
-                <button class="header-nav__button">ログアウト</button>
-            </form>
-        </li>
+        @php
+            $routeName = Route::currentRouteName();
+        @endphp
+
+        @if ($routeName === 'attendance.end.screen')
+            {{-- 退勤後のナビゲーション --}}
+            <li><a class="header-nav__link" href="/attendance/list">今月の出勤一覧</a></li>
+            <li><a class="header-nav__link" href="/application">申請一覧</a></li>
+            <li>
+                <form action="/logout" method="post">
+                    @csrf
+                    <button class="header-nav__button">ログアウト</button>
+                </form>
+            </li>
+        @else
+            {{-- 一般ユーザー用ナビゲーション --}}
+            <li><a class="header-nav__link" href="/attendance">勤怠</a></li>
+            <li><a class="header-nav__link" href="/attendance/list">勤怠一覧</a></li>
+            <li><a class="header-nav__link" href="/request/list">申請</a></li>
+            <li>
+                <form action="/logout" method="post">
+                    @csrf
+                    <button class="header-nav__button">ログアウト</button>
+                </form>
+            </li>
+        @endif
     @endif
-@endif
+    @endif
 
     </ul>
   </nav>

@@ -13,6 +13,7 @@ class RequestController extends Controller
     $status = $request->get('status', 'waiting');
 
     $requests = RequestApplication::with(['attendance', 'user'])
+        ->where('user_id', auth()->id()) 
         ->where('status', $status === 'waiting' ? '承認待ち' : '承認済み')
         ->orderBy('applied_at', 'desc')
         ->get();

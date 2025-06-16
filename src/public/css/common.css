@@ -222,7 +222,117 @@ h2 {
 }
 
 @media (min-width: 768px) and (max-width: 850px) {
+    header {
+        padding: 0 20px;
+        height: 55px;
+    }
+
     .header__logo {
-        width: 25vw;
+        width: 180px;
+    }
+
+    .header__nav ul {
+        gap: 20px;
+    }
+
+    .header__nav li {
+        margin-right: 20px;
+    }
+
+    .header__logout,
+    .header__nav li,
+    .header-nav__link,
+    .header-nav__button {
+        font-size: 14px;
+    }
+
+    .header__btn {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .page__title {
+        font-size: 24px;
+    }
+
+    .form__label--item {
+        font-size: 18px;
+    }
+
+    .btn {
+        width: 90%;
+        max-width: 350px;
+        font-size: 16px;
+    }
+
+    .btn--big {
+        font-size: 18px;
+    }
+
+    .entry__name {
+        font-size: 16px;
+    }
+
+    .input {
+        height: 40px;
+    }
+}
+
+/* =========================
+   💻 PC (1400〜1540px)
+   ========================= */
+@media (min-width: 1400px) and (max-width: 1540px) {
+    header {
+        padding: 0 40px;
+        height: 65px;
+    }
+
+    .header__logo {
+        width: 220px;
+    }
+
+    .header__nav ul {
+        gap: 25px;
+    }
+
+    .header__nav li {
+        margin-right: 25px;
+    }
+
+    .header__logout,
+    .header__nav li,
+    .header-nav__link,
+    .header-nav__button {
+        font-size: 18px;
+    }
+
+    .header__btn {
+        font-size: 16px;
+        padding: 10px 14px;
+    }
+
+    .page__title {
+        font-size: 28px;
+    }
+
+    .form__label--item {
+        font-size: 22px;
+    }
+
+    .btn {
+        width: 400px;
+        font-size: 18px;
+    }
+
+    .btn--big {
+        font-size: 20px;
+    }
+
+    .entry__name {
+        font-size: 18px;
+    }
+
+    .input {
+        height: 45px;
     }
 }

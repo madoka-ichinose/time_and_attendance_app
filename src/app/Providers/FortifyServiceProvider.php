@@ -33,9 +33,15 @@ class FortifyServiceProvider extends ServiceProvider
                      return view('auth.register');
                  });
             
-         Fortify::loginView(function () {
-                     return view('auth.login');
-                 });
+                 Fortify::ignoreRoutes();
+
+                // Fortifyの認証機能登録
+                Fortify::loginView(function () {
+                // 一般ユーザーのログイン画面のBladeを返す
+                return view('auth.login');
+                });
+
+                // 管理者用はカスタムルートで登録
             
          RateLimiter::for('login', function (Request $request) {
                      $email = (string) $request->email;
