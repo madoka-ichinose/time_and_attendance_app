@@ -9,6 +9,7 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\Admin\StaffController;
 
 // 一般ユーザー用ログイン画面
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -56,4 +57,8 @@ Route::post('/admin/login', [AdminController::class, 'login']);
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/attendance/list', [AdminController::class, 'index'])->name('admin.attendance.list');
+});
+
+Route::middleware(['auth', 'can:isAdmin'])->group(function () {
+    Route::get('/admin/staff_list', [StaffController::class, 'index'])->name('admin.staff.index');
 });

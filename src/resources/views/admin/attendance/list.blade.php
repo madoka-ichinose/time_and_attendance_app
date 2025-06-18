@@ -29,19 +29,17 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($attendances as $user)
-                @php
-                    $attendance = $user->attendances->first();
-                @endphp
-                <tr>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $attendance['clock_in'] }}</td>
-                    <td>{{ $attendance['clock_out'] }}</td>
-                    <td>{{ $attendance['break_time'] }}</td>
-                    <td>{{ $attendance['work_time'] }}</td>
-                    <td><a href="#">詳細</a></td>
-                </tr>
-            @endforeach
+        @foreach ($attendances as $attendance)
+        <tr>
+            <td>{{ $attendance['user_name'] }}</td>
+            <td>{{ $attendance['clock_in'] }}</td>
+            <td>{{ $attendance['clock_out'] }}</td>
+            <td>{{ $attendance['break_time'] }}</td>
+            <td>{{ $attendance['work_time'] }}</td>
+            <td><a href="#">詳細</a></td>
+        </tr>
+        @endforeach
+
         </tbody>
     </table>
 </div>
