@@ -62,3 +62,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 Route::middleware(['auth', 'can:isAdmin'])->group(function () {
     Route::get('/admin/staff_list', [StaffController::class, 'index'])->name('admin.staff.index');
 });
+
+Route::middleware(['auth', 'can:isAdmin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/attendance/{user}/monthly', [AdminController::class, 'monthly'])->name('attendance.monthly');
+    Route::get('/attendance/{attendance}/detail', [AdminController::class, 'detail'])->name('attendance.detail');
+    Route::put('/attendance/{attendance}/update', [AdminController::class, 'updateAttendance'])->name('attendance.update');
+});
