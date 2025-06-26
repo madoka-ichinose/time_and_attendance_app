@@ -28,10 +28,23 @@
         <tr>
             <td>{{ $request->status }}</td>
             <td>{{ $request->user->name }}</td>
-            <td>{{ \Carbon\Carbon::parse($request->attendance->work_date)->format('Y/m/d') }}</td>
+            <td>
+            {{ $request->work_date ? \Carbon\Carbon::parse($request->work_date)->format('Y/m/d') : '―' }}
+            </td>
             <td>{{ $request->reason }}</td>
             <td>{{ \Carbon\Carbon::parse($request->applied_at)->format('Y/m/d') }}</td>
-            <td><a href="{{ route('attendance.detail', ['id' => $request->attendance->id]) }}">詳細</a></td>
+            <td>
+    @if ($request->attendance)
+        <a href="{{ route('attendance.detail', ['id' => $request->attendance->id]) }}">詳細</a>
+    @elseif ($request->work_date)
+        <a href="{{ route('attendance.createOrEdit', ['date' => $request->work_date]) }}">詳細</a>
+    @else
+        ―
+    @endif
+</td>
+
+
+
         </tr>
         @endforeach
     </tbody>

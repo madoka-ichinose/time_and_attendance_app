@@ -8,6 +8,8 @@ use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Models\BreakTime;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Models\RequestApplication;
 
 class AdminController extends Controller
 {
@@ -197,5 +199,102 @@ class AdminController extends Controller
         $attendance->total_work_minutes = max(0, $workMinutes - $breakMinutes);
         $attendance->save();
     }
+
+    public function exportCsv(Request $request)
+    {
+        $userId = $request->input('user_id');
+        $month = $request->input('month');
+
+        $user = User::findOrFail($userId);
+        $currentMonth = Carbon::parse($month);
+
+        $attendances = Attendance::where('user_id', $userId)
+        ->whereBetween('work_date', [
+            $currentMonth->copy()->startOfMonth(),
+            $currentMonth->copy()->endOfMonth()
+        ])
+        ->with('breaks')
+        ->orderBy('work_date')
+        ->get()
+        ->keyBy(fn($a) => Carbon::parse($a->work_date)->format('Y-m-d'));
+
+        $csv = new StreamedResponse(function () use ($attendances, $currentMonth) {
+        $handle = fopen('php://output', 'w');
+
+        // UTF-8 BOM を出力（これが重要！）
+        echo chr(0xEF) . chr(0xBB) . chr(0xBF);
+
+        // ヘッダー
+        fputcsv($handle, ['日付', '出勤', '退勤', '休憩時間', '勤務時間']);
+
+        for ($date = $currentMonth->copy()->startOfMonth(); $date->lte($currentMonth->copy()->endOfMonth()); $date->addDay()) {
+            $record = $attendances->get($date->format('Y-m-d'));
+            $clockIn = $record && $record->clock_in ? Carbon::parse($record->clock_in)->format('H:i') : '--:--';
+            $clockOut = $record && $record->clock_out ? Carbon::parse($record->clock_out)->format('H:i') : '--:--';
+            $break = $record ? $this->formatBreakTime($record->breaks) : '--:--';
+            $work = $record && $record->total_work_minutes ? $this->formatMinutes($record->total_work_minutes) : '--:--';
+
+            fputcsv($handle, [
+                $date->format('Y-m-d'),
+                $clockIn,
+                $clockOut,
+                $break,
+                $work
+            ]);
+        }
+
+        fclose($handle);
+    });
+
+        $fileName = $user->name . '_'. $currentMonth->format('Y_m') . '_勤怠.csv';
+
+        $csv->headers->set('Content-Type', 'text/csv');
+        $csv->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+
+        return $csv;
+    }
+
+    public function requestList(Request $request)
+    {
+        $status = $request->input('status', 'waiting'); // デフォルトは「承認待ち」
+
+        $requests = RequestApplication::with(['user', 'attendance'])
+        ->where('status', $status)
+        ->latest('applied_at')
+        ->get();
+
+        return view('admin.requests.index', compact('requests', 'status'));
+    }
+
+    public function approve($id)
+    {
+        $application = RequestApplication::with('attendance', 'requestBreakTimes')->findOrFail($id);
+
+        $attendance = $application->attendance;
+
+    // 承認内容を反映
+        $attendance->clock_in = $application->requested_clock_in;
+        $attendance->clock_out = $application->requested_clock_out;
+        $attendance->note = $application->reason;
+        $attendance->save();
+
+    // 元の休憩を削除して、申請された休憩を登録
+        $attendance->breaks()->delete();
+
+    foreach ($application->requestBreakTimes as $break) {
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'start_time' => $break->start_time,
+            'end_time' => $break->end_time,
+        ]);
+    }
+
+    // 申請ステータスを承認済みに更新
+    $application->status = '承認済み';
+    $application->save();
+
+    return redirect()->route('admin.request.list')->with('success', '申請を承認しました。');
+}
+
 
 }

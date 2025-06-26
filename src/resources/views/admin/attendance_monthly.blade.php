@@ -44,5 +44,11 @@
             @endforeach
         </tbody>
     </table>
+
+    <form method="GET" action="{{ route('admin.attendance.csv') }}">
+        <input type="hidden" name="user_id" value="{{ $user->id }}">
+        <input type="hidden" name="month" value="{{ $currentMonth->format('Y-m') }}">
+        <button type="submit" class="csv-button">CSV出力</button>
+    </form>
 </div>
 @endsection

@@ -29,17 +29,14 @@
             @foreach ($attendances as $attendance)
                 <tr>
                     <td>{{ $attendance['display_date'] }}</td>
-                    <td>{{ $attendance['clock_in'] }}</td>
-                    <td>{{ $attendance['clock_out'] }}</td>
-                    <td>{{ $attendance['break_time'] }}</td>
-                    <td>{{ $attendance['work_time'] }}</td>
+                    <td>{{ $attendance['clock_in'] === '--:--' ? '' : $attendance['clock_in'] }}</td>
+                    <td>{{ $attendance['clock_out'] === '--:--' ? '' : $attendance['clock_out'] }}</td>
+                    <td>{{ $attendance['break_time'] === '--:--' ? '' : $attendance['break_time'] }}</td>
+                    <td>{{ $attendance['work_time'] === '--:--' ? '' : $attendance['work_time'] }}</td>
                     <td>
-                        @if (!is_null($attendance['id']))
-                        <a href="{{ route('attendance.detail', ['id' => $attendance['id']]) }}" class="attendance__detail">詳細</a>
-                        @else
-                        <span style="color: #ccc;">詳細</span>
-                        @endif
+                    <a href="{{ route('attendance.createOrEdit', ['date' => $attendance['date']]) }}" class="attendance__detail">詳細</a>
                     </td>
+
                 </tr>
             @endforeach
         </tbody>

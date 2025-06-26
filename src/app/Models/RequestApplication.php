@@ -9,7 +9,9 @@ class RequestApplication extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['attendance_id', 'user_id', 'status', 'reason', 'applied_at'];
+    protected $fillable = ['attendance_id', 'user_id', 'status', 'reason', 'applied_at','work_date',
+    'clock_in',
+    'clock_out',];
 
     public function attendance()
     {
@@ -20,4 +22,20 @@ class RequestApplication extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function breakTimes()
+    {
+        return $this->hasMany(RequestBreakTime::class);
+    }
+
+    public function requestBreakTimes()
+    {
+        return $this->hasMany(RequestBreakTime::class);
+    }
+
+    public function breaks()
+    {
+        return $this->hasMany(RequestBreakTime::class, 'request_application_id');
+    }
+
 }

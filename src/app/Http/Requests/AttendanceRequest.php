@@ -24,8 +24,8 @@ class AttendanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'clock_in' => 'required|date_format:H:i',
-            'clock_out' => 'required|date_format:H:i|after:clock_in',
+            'clock_in' => 'nullable|date_format:H:i',
+            'clock_out' => 'nullable|date_format:H:i|after:clock_in',
             'note' => 'required|string',
             'breaks.*.start' => 'nullable|date_format:H:i',
             'breaks.*.end' => 'nullable|date_format:H:i',
@@ -41,12 +41,16 @@ class AttendanceRequest extends FormRequest
     }
 
     public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $in = strtotime($this->input('clock_in'));
-            $out = strtotime($this->input('clock_out'));
+{
+    $validator->after(function ($validator) {
+        $in = $this->input('clock_in');
+        $out = $this->input('clock_out');
 
-            if ($in >= $out) {
+        if ($in && $out) {
+            $inTime = strtotime($in);
+            $outTime = strtotime($out);
+
+            if ($inTime >= $outTime) {
                 $validator->errors()->add('clock_in', '出勤時間もしくは退勤時間が不適切な値です');
             }
 
@@ -54,10 +58,13 @@ class AttendanceRequest extends FormRequest
                 $start = isset($break['start']) ? strtotime($break['start']) : null;
                 $end = isset($break['end']) ? strtotime($break['end']) : null;
 
-                if (($start && ($start < $in || $start > $out)) || ($end && ($end < $in || $end > $out))) {
+                if (($start && ($start < $inTime || $start > $outTime)) ||
+                    ($end && ($end < $inTime || $end > $outTime))) {
                     $validator->errors()->add("breaks.$id.start", '休憩時間が勤務時間外です');
                 }
             }
-        });
-    }
+        }
+    });
+}
+
 }

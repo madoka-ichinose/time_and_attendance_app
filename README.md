@@ -30,3 +30,5 @@
    - php artisan migrate --seed
 5. サーバー起動
    - php artisan serve
+6. doctrine/dbal パッケージをインストール
+   - composer require doctrine/dbal

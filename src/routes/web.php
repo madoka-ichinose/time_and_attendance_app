@@ -30,8 +30,12 @@ Route::middleware('auth','verified')->group(function () {
     Route::get('/attendance/end-screen', [AttendanceController::class, 'showEndScreen'])->name('attendance.end.screen');
     Route::get('/attendance/list{year?}/{month?}', [AttendanceController::class,'index'])->name('attendance.list');
     Route::get('/attendance/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
-    Route::post('/attendance/request/{id}', [AttendanceController::class, 'submitRequest'])->name('attendance.request');
+    Route::post('/attendance/request/{id}', [AttendanceController::class, 'submitRequest'])->name('attendance.request.submit');
     Route::get('/request/list', [RequestController::class, 'index'])->name('request.list');
+    Route::get('/attendance/{date}/edit', [AttendanceController::class, 'createOrEdit'])->name('attendance.createOrEdit');
+    Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('/attendance/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+
 
 });
 
@@ -67,4 +71,10 @@ Route::middleware(['auth', 'can:isAdmin'])->prefix('admin')->name('admin.')->gro
     Route::get('/attendance/{user}/monthly', [AdminController::class, 'monthly'])->name('attendance.monthly');
     Route::get('/attendance/{attendance}/detail', [AdminController::class, 'detail'])->name('attendance.detail');
     Route::put('/attendance/{attendance}/update', [AdminController::class, 'updateAttendance'])->name('attendance.update');
+    Route::get('/requests', [AdminController::class, 'requestList'])->name('requests.index');
+
+    Route::post('/admin/request/{id}/approve', [AdminController::class, 'approve'])->name('admin.request.approve');
+
 });
+
+Route::get('/admin/attendance/csv', [AdminController::class, 'exportCsv'])->name('admin.attendance.csv');
