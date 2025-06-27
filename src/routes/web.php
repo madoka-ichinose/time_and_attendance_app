@@ -72,8 +72,8 @@ Route::middleware(['auth', 'can:isAdmin'])->prefix('admin')->name('admin.')->gro
     Route::get('/attendance/{attendance}/detail', [AdminController::class, 'detail'])->name('attendance.detail');
     Route::put('/attendance/{attendance}/update', [AdminController::class, 'updateAttendance'])->name('attendance.update');
     Route::get('/requests', [AdminController::class, 'requestList'])->name('requests.index');
-
-    Route::post('/admin/request/{id}/approve', [AdminController::class, 'approve'])->name('admin.request.approve');
+    Route::get('/requests/{request}/detail', [AdminController::class, 'requestDetail'])->name('requests.detail');
+    Route::put('/requests/{request}/approve', [AdminController::class, 'approveRequest'])->name('requests.approve');
 
 });
 

@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Models\BreakTime;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\RequestApplication;
+use App\Models\RequestBreakTime;
 
 class AdminController extends Controller
 {
@@ -145,13 +146,14 @@ class AdminController extends Controller
 
     public function detail(Attendance $attendance)
     {
-        $user = $attendance->user; // リレーションから取得
-        return view('admin.attendance_detail', compact('attendance', 'user'));
+        $attendance->load(['user', 'breaks']);
+        return view('admin.attendance_detail', compact('attendance'));
     }
 
-    public function updateAttendance(Request $request, Attendance $attendance)
-    {
-        $validated = $request->validate([
+    // Controller メソッド修正（例）
+public function updateAttendance(Request $request, $id = null)
+{
+    $validated = $request->validate([
         'clock_in' => 'nullable|date_format:H:i',
         'clock_out' => 'nullable|date_format:H:i|after_or_equal:clock_in',
         'note' => 'nullable|string|max:1000',
@@ -159,17 +161,27 @@ class AdminController extends Controller
         'breaks.*.end_time' => 'nullable|date_format:H:i|after_or_equal:breaks.*.start_time',
     ]);
 
-    // 出退勤を更新
-        $attendance->update([
+    // 既存または新規の勤怠データ取得
+    $attendance = Attendance::find($id);
+
+    if (!$attendance) {
+        $attendance = Attendance::create([
+            'user_id' => auth()->id(), // 管理者による新規作成なら、対象ユーザーIDを別途取得してください
+            'work_date' => $request->input('work_date'), // hidden項目で渡す必要あり
+        ]);
+    }
+
+    // 勤怠情報の更新
+    $attendance->update([
         'clock_in' => $attendance->work_date . ' ' . $request->input('clock_in'),
         'clock_out' => $attendance->work_date . ' ' . $request->input('clock_out'),
         'note' => $request->input('note'),
     ]);
 
-    // 既存の休憩を全削除してから再登録（差分更新が不要な場合）
-        $attendance->breaks()->delete();
+    // 休憩リセット・再登録
+    $attendance->breaks()->delete();
 
-        foreach ($request->input('breaks', []) as $break) {
+    foreach ($request->input('breaks', []) as $break) {
         if (!empty($break['start_time']) && !empty($break['end_time'])) {
             $attendance->breaks()->create([
                 'start_time' => $attendance->work_date . ' ' . $break['start_time'],
@@ -178,12 +190,12 @@ class AdminController extends Controller
         }
     }
 
-    // 勤務時間の再計算（オプション）
-        $this->recalculateWorkMinutes($attendance);
+    $this->recalculateWorkMinutes($attendance);
 
-        return redirect()->route('admin.attendance.edit', ['attendance' => $attendance->id])
-        ->with('success', '勤怠情報を更新しました。');
-    }
+    return redirect()->route('admin.attendance.list', ['attendance' => $attendance->id])
+        ->with('success', '勤怠情報を保存しました。');
+}
+
 
     private function recalculateWorkMinutes(Attendance $attendance)
     {
@@ -256,9 +268,9 @@ class AdminController extends Controller
 
     public function requestList(Request $request)
     {
-        $status = $request->input('status', 'waiting'); // デフォルトは「承認待ち」
+        $status = $request->input('status', 'waiting') === 'waiting' ? '承認待ち' : '承認済み';
 
-        $requests = RequestApplication::with(['user', 'attendance'])
+        $requests = RequestApplication::with(['user', 'attendance','breaks'])
         ->where('status', $status)
         ->latest('applied_at')
         ->get();
@@ -266,34 +278,70 @@ class AdminController extends Controller
         return view('admin.requests.index', compact('requests', 'status'));
     }
 
-    public function approve($id)
+    public function requestDetail($id)
     {
-        $application = RequestApplication::with('attendance', 'requestBreakTimes')->findOrFail($id);
+        $request = RequestApplication::with(['user', 'breaks'])->findOrFail($id);
+        return view('admin.requests.detail', compact('request'));
+    }
 
-        $attendance = $application->attendance;
+    public function approveRequest($id)
+{
+    $request = RequestApplication::with('breaks')->findOrFail($id);
 
-    // 承認内容を反映
-        $attendance->clock_in = $application->requested_clock_in;
-        $attendance->clock_out = $application->requested_clock_out;
-        $attendance->note = $application->reason;
-        $attendance->save();
+    if ($request->status !== '承認待ち') {
+        return redirect()->back()->with('info', 'この申請はすでに承認されています。');
+    }
 
-    // 元の休憩を削除して、申請された休憩を登録
-        $attendance->breaks()->delete();
+    $request->status = '承認済み';
+    $request->save();
 
-    foreach ($application->requestBreakTimes as $break) {
+    // 出勤・退勤時刻を Carbon インスタンスに変換
+    $clockIn = $request->clock_in
+        ? Carbon::parse($request->work_date . ' ' . Carbon::parse($request->clock_in)->format('H:i'))
+        : null;
+    $clockOut = $request->clock_out
+        ? Carbon::parse($request->work_date . ' ' . Carbon::parse($request->clock_out)->format('H:i'))
+        : null;
+
+    // 労働時間計算
+    $workMinutes = 0;
+    if ($clockIn && $clockOut) {
+        $workMinutes = $clockIn->diffInMinutes($clockOut);
+
+        // 休憩分を引く
+        foreach ($request->breaks as $break) {
+            $start = Carbon::parse($request->work_date . ' ' . Carbon::parse($break->start_time)->format('H:i'));
+            $end = Carbon::parse($request->work_date . ' ' . Carbon::parse($break->end_time)->format('H:i'));
+            $workMinutes -= $start->diffInMinutes($end);
+        }
+    }
+
+    // 勤怠データを更新 or 作成
+    $attendance = Attendance::updateOrCreate(
+        [
+            'user_id' => $request->user_id,
+            'work_date' => $request->work_date,
+        ],
+        [
+            'clock_in' => $clockIn,
+            'clock_out' => $clockOut,
+            'note' => $request->reason,
+            'total_work_minutes' => $workMinutes,
+        ]
+    );
+
+    // 休憩データ上書き
+    $attendance->breaks()->delete();
+
+    foreach ($request->breaks as $break) {
         BreakTime::create([
             'attendance_id' => $attendance->id,
-            'start_time' => $break->start_time,
-            'end_time' => $break->end_time,
+            'start_time' => Carbon::parse($request->work_date . ' ' . Carbon::parse($break->start_time)->format('H:i')),
+            'end_time' => Carbon::parse($request->work_date . ' ' . Carbon::parse($break->end_time)->format('H:i')),
         ]);
     }
 
-    // 申請ステータスを承認済みに更新
-    $application->status = '承認済み';
-    $application->save();
-
-    return redirect()->route('admin.request.list')->with('success', '申請を承認しました。');
+    return redirect()->route('admin.requests.detail', $request->id)->with('success', '申請を承認しました。');
 }
 
 

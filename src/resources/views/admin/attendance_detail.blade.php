@@ -8,14 +8,19 @@
 <div class="attendance-detail-container">
     <h1 class="page-title">勤怠詳細</h1>
 
-    <form method="POST" action="{{ route('admin.attendance.update', ['attendance' => $attendance->id]) }}">
-        @csrf
-        @method('PUT')
+    <form method="POST" action="{{ route('admin.attendance.update', ['attendance' => $attendance->id ?? 0]) }}">
+    @csrf
+    @method('PUT')
+
+    {{-- 新規作成時に必要な情報 --}}
+    <input type="hidden" name="user_id" value="{{ $attendance->user_id }}">
+    <input type="hidden" name="work_date" value="{{ $attendance->work_date }}">
+
 
         <table class="attendance-detail-table">
             <tr>
                 <th>名前</th>
-                <td>{{ $user->name }}</td>
+                <td><td>{{ $attendance->user->name }}</td></td>
             </tr>
             <tr>
                 <th>日付</th>

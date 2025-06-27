@@ -1,6 +1,6 @@
 .attendance-detail-container {
     max-width: 700px;
-    margin: 0 auto;
+    margin: 40px auto;
     background: #fff;
     padding: 2rem;
     border-radius: 10px;
@@ -9,6 +9,12 @@
 .page-title {
     font-size: 1.5rem;
     margin-bottom: 2rem;
+}
+
+.attendance-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
 }
 
 .attendance-detail-table {
@@ -48,4 +54,26 @@
     font-size: 1rem;
     cursor: pointer;
     border-radius: 6px;
+}
+
+.approve-button {
+    background-color: #000;
+    color: #fff;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    margin-top: 24px;
+    cursor: pointer;
+}
+
+.approve-button:hover:enabled {
+    background-color: #111111;
+}
+
+/* 承認済み時に無効ボタンとしてグレー表示 */
+.approve-button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
 }

@@ -30,17 +30,21 @@
         </thead>
         <tbody>
         @foreach ($attendances as $attendance)
-        <tr>
-            <td>{{ $attendance['user_name'] }}</td>
-            <td>{{ $attendance['clock_in'] }}</td>
-            <td>{{ $attendance['clock_out'] }}</td>
-            <td>{{ $attendance['break_time'] }}</td>
-            <td>{{ $attendance['work_time'] }}</td>
-            <td>
-                <a href="{{ route('admin.attendance.detail', ['attendance' => $attendance['id']]) }}">詳細</a>
-            </td>
-        </tr>
-        @endforeach
+<tr>
+    <td>{{ $attendance['user_name'] ?? '―' }}</td>
+    <td>{{ $attendance['clock_in'] !== '--:--' ? $attendance['clock_in'] : '―' }}</td>
+    <td>{{ $attendance['clock_out'] !== '--:--' ? $attendance['clock_out'] : '―' }}</td>
+    <td>{{ $attendance['break_time'] ?? '―' }}</td>
+    <td>{{ $attendance['work_time'] ?? '―' }}</td>
+    <td>
+        @if (!empty($attendance['id']))
+            <a href="{{ route('admin.attendance.detail', ['attendance' => $attendance['id']]) }}">詳細</a>
+        @else
+            <span class="no-link">詳細</span>
+        @endif
+    </td>
+</tr>
+@endforeach
 
         </tbody>
     </table>

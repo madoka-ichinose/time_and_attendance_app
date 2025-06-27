@@ -9,8 +9,8 @@
     <h2>申請一覧</h2>
 
     <div>
-        <a href="?status=waiting" class="{{ $status == 'waiting' ? 'active' : '' }}">承認待ち</a>
-        <a href="?status=approved" class="{{ $status == 'approved' ? 'active' : '' }}">承認済み</a>
+        <a href="?status=承認待ち" class="{{ $status == '承認待ち' ? 'active' : '' }}">承認待ち</a>
+        <a href="?status=承認済み" class="{{ $status == '承認済み' ? 'active' : '' }}">承認済み</a>
     </div>
 
     <table>
@@ -29,15 +29,11 @@
             <tr>
                 <td>{{ $request->status }}</td>
                 <td>{{ $request->user->name }}</td>
-                <td>{{ optional($request->attendance)->work_date ? \Carbon\Carbon::parse($request->attendance->work_date)->format('Y/m/d') : '-' }}</td>
+                <td>{{ $request->work_date }}</td>
                 <td>{{ $request->reason }}</td>
-                <td>{{ \Carbon\Carbon::parse($request->applied_at)->format('Y/m/d') }}</td>
+                <td>{{ \Carbon\Carbon::parse($request->applied_at)->format('Y/m/d H:i') }}</td>
                 <td>
-                    @if ($request->attendance)
-                        <a href="{{ route('admin.attendance.detail', ['attendance' => $request->attendance->id]) }}">詳細</a>
-                    @else
-                        <span class="no-link">詳細</span>
-                    @endif
+                <a href="{{ route('admin.requests.detail', ['request' => $request->id]) }}">詳細</a>
                 </td>
             </tr>
             @empty
