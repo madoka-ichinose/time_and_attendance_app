@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/staff_list.css') }}">
+<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
 @endsection
 
 @section('content')
-<div class="staff-list-container">
-    <h1 class="page-title">スタッフ一覧</h1>
+<div class="attendance-list">
+    <h2>スタッフ一覧</h2>
     <table class="staff-table">
         <thead>
             <tr>

@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance_monthly.css') }}">
+<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
 @endsection
 
 @section('content')
-<div class="attendance-monthly-container">
-    <h1 class="page-title">{{ $user->name }}さんの勤怠</h1>
+<div class="attendance-list">
+    <h2 class="page-title">{{ $user->name }}さんの勤怠</h2>
 
     <div class="navigation">
         <a href="{{ route('admin.attendance.monthly', ['user' => $user->id, 'month' => $prevMonth]) }}" class="nav-button">← 前月</a>

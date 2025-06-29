@@ -2,13 +2,13 @@
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/common.css') }}">
-<link rel="stylesheet" href="{{ asset('css/attendance_detail.css') }}">
+<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
 @endsection
 
 @section('content')
-<div class="attendance-detail-container">
-    <h2 class="attendance-title">勤怠詳細</h2>
-
+<div class="attendance-list">
+    <h2>勤怠詳細</h2>
+    <div class="attendance-detail">
     <table class="attendance-detail-table">
         <tr>
             <th>名前</th>
@@ -40,7 +40,7 @@
             <td>{{ $request->reason }}</td>
         </tr>
     </table>
-
+</div>
     @if ($request->status === '承認待ち')
         <form method="POST" action="{{ route('admin.requests.approve', ['request' => $request->id]) }}">
             @csrf

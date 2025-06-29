@@ -7,7 +7,7 @@
 <div class="request-form">
 <h2>申請一覧</h2>
 
-<div>
+<div class="tab">
 <a href="?status=waiting" class="{{ request('status') == 'waiting' ? 'active' : '' }}">承認待ち</a>
 <a href="?status=approved" class="{{ request('status') == 'approved' ? 'active' : '' }}">承認済み</a>
 </div>

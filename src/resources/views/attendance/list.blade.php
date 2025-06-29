@@ -6,12 +6,18 @@
 @endsection
 
 @section('content')
-    <h1>勤怠一覧</h1>
+<div class="attendance-list">
+    <h2>勤怠一覧</h2>
 
     <div class="attendance-month">
-        <a href="{{ $prevMonthUrl }}">← 前月</a>
-        <span style="margin: 0 20px; font-weight: bold;">{{ $currentMonth }}</span>
-        <a href="{{ $nextMonthUrl }}">翌月 →</a>
+    <a href="{{ $prevMonthUrl }}" class="month-nav">← 前月</a>
+
+    <div class="month-current">
+        <i class="fa-regular fa-calendar"></i> {{-- Font Awesome --}}
+        <span>{{ $currentMonth }}</span>
+    </div>
+
+    <a href="{{ $nextMonthUrl }}" class="month-nav">翌月 →</a>
     </div>
 
     <table>
@@ -41,4 +47,5 @@
             @endforeach
         </tbody>
     </table>
+</div>
 @endsection

@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
+<link rel="stylesheet" href="{{ asset('css/request.css') }}">
 @endsection
 
 @section('content')
 <div class="request-form">
     <h2>申請一覧</h2>
 
-    <div>
+    <div class="tab">
         <a href="?status=承認待ち" class="{{ $status == '承認待ち' ? 'active' : '' }}">承認待ち</a>
         <a href="?status=承認済み" class="{{ $status == '承認済み' ? 'active' : '' }}">承認済み</a>
     </div>

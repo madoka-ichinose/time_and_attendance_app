@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance_detail.css') }}">
+<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
 @endsection
 
 @section('content')
-<div class="attendance-detail-container">
-    <h1 class="page-title">勤怠詳細</h1>
+<div class="attendance-list">
+    <h2>勤怠詳細</h2>
 
     <form method="POST" action="{{ route('admin.attendance.update', ['attendance' => $attendance->id ?? 0]) }}">
     @csrf
@@ -65,9 +65,9 @@
             </tr>
         </table>
 
-        <div class="submit-button">
-            <button type="submit">修正</button>
-        </div>
+                    <div class="attendance-detail-button">
+                        <button type="submit" class="btn-black">修正</button>
+                    </div>
     </form>
 </div>
 @endsection

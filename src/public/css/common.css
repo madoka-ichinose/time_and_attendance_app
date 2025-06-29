@@ -4,6 +4,10 @@
 
 body {
     width: 100vw;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: #f4f3f6;
 }
 
 img {
@@ -35,7 +39,11 @@ header {
 }
 
 h2 {
-    font-size: 36px;
+    font-size: 30px;
+    font-weight: bold;
+    border-left: 5px solid #000;
+    padding-left: 10px;
+    margin-bottom: 30px;
 }
 
 .form__label--item {

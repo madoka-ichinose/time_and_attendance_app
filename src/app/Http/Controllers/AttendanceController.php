@@ -16,28 +16,38 @@ use App\Models\RequestBreakTime;
 class AttendanceController extends Controller
 {
     public function showStartScreen()
-    {
-        $user = auth()->user();
-        $today = Carbon::today();
+{
+    $user = auth()->user();
+    $today = Carbon::today();
 
-        // 今日の出勤記録を取得
-        $attendance = Attendance::where('user_id', $user->id)
+    // 今日の出勤記録を取得
+    $attendance = Attendance::where('user_id', $user->id)
         ->whereDate('work_date', $today)
         ->first();
 
-        if ($attendance) {
-            if ($attendance->clock_out) {
-                // 退勤済 → end 画面を表示
-                return view('attendance.end');
-            } elseif ($attendance->clock_in) {
-                // 出勤済・退勤前 → working 画面を表示
-                return view('attendance.working');
-            }
+    if ($attendance) {
+        if ($attendance->clock_out) {
+            // 退勤済 → end 画面を表示
+            return view('attendance.end');
         }
 
-        // 出勤前なら出勤ボタンのある画面へ
-        return view('attendance.start');
+        // 休憩中か確認
+        $isOnBreak = BreakTime::where('attendance_id', $attendance->id)
+            ->whereNull('end_time')
+            ->exists();
+
+        if ($isOnBreak) {
+            return view('attendance.break');
+        }
+
+        // 出勤済・退勤前 → working 画面を表示
+        return view('attendance.working');
     }
+
+    // 出勤前なら出勤ボタンのある画面へ
+    return view('attendance.start');
+}
+
 
     public function start(Request $request)
     {
@@ -119,13 +129,27 @@ class AttendanceController extends Controller
         ->whereDate('work_date', $today)
         ->first();
 
-        if ($attendance && $attendance->clock_out) {
+        if (!$attendance) {
+        return redirect()->route('attendance.start');
+        }
+
+        if ($attendance->clock_out) {
         // 退勤済み → end画面へリダイレクト
         return redirect()->route('attendance.end.screen');
         }
 
+    // 休憩中か確認
+        $isOnBreak = BreakTime::where('attendance_id', $attendance->id)
+        ->whereNull('end_time')
+        ->exists();
+
+        if ($isOnBreak) {
+        return redirect()->route('attendance.break.screen');
+        }
+
         return view('attendance.working');
     }
+
 
     public function end(Request $request)
     {

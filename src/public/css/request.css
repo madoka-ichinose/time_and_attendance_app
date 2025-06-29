@@ -2,7 +2,7 @@
 .request-form {
     max-width: 900px;
     margin: 40px auto;
-    background-color: #f7f7f7;
+    background-color: #f4f3f6;
     padding: 40px;
     border-radius: 10px;
     font-family: 'Helvetica Neue', sans-serif;
@@ -10,7 +10,7 @@
 
 /* タイトル */
 .request-form h2 {
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
     border-left: 5px solid #000;
     padding-left: 10px;
@@ -19,7 +19,7 @@
 
 /* タブ切り替え */
 .request-form div>a {
-    margin-right: 30px;
+    margin-right: 40px;
     font-size: 16px;
     text-decoration: none;
     color: #888;
@@ -30,7 +30,11 @@
 
 .request-form div>a.active {
     color: #000;
-    border-bottom: 2px solid #000;
+}
+
+.tab {
+    border-bottom: 1px solid #000;
+    padding-bottom: 10px;
 }
 
 /* テーブル */

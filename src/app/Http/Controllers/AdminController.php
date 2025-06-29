@@ -267,16 +267,16 @@ public function updateAttendance(Request $request, $id = null)
     }
 
     public function requestList(Request $request)
-    {
-        $status = $request->input('status', 'waiting') === 'waiting' ? '承認待ち' : '承認済み';
+{
+    $status = $request->input('status', '承認待ち'); // デフォルトは「承認待ち」
 
-        $requests = RequestApplication::with(['user', 'attendance','breaks'])
+    $requests = RequestApplication::with(['user', 'attendance','breaks'])
         ->where('status', $status)
         ->latest('applied_at')
         ->get();
 
-        return view('admin.requests.index', compact('requests', 'status'));
-    }
+    return view('admin.requests.index', compact('requests', 'status'));
+}
 
     public function requestDetail($id)
     {

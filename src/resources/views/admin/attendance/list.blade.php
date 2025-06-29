@@ -8,7 +8,7 @@
 @section('title', '勤怠一覧（管理者）')
 
 @section('content')
-<div class="container">
+<div class="attendance-list">
     <h2>📅 {{ $date->format('Y年n月j日') }}の勤怠</h2>
 
     <form method="GET" action="{{ route('admin.attendance.list') }}">

@@ -6,9 +6,8 @@
 @endsection
 
 @section('content')
-<div class="attendance-detail-container">
-    <div class="attendance-detail-box">
-        <h2 class="attendance-title">勤怠詳細</h2>
+<div class="attendance-list">
+        <h2>勤怠詳細</h2>
 
         @if ($pendingRequest)
                 <p class="text-danger" style="color: red; margin-top: 10px;">
@@ -25,21 +24,21 @@
                     <th>日付</th>
                     <td>
                     {{ optional($pendingRequest)->work_date 
-        ? \Carbon\Carbon::parse($pendingRequest->work_date)->format('Y/m/d') 
-        : '―' }}
-                </td>
+                    ? \Carbon\Carbon::parse($pendingRequest->work_date)->format('Y/m/d') 
+                    : '―' }}
+                    </td>
                 </tr>
                 
                 <tr>
                     <th>出勤・退勤</th>
                     <td> 
                     {{ $pendingRequest && $pendingRequest->clock_in
-    ? \Carbon\Carbon::parse($pendingRequest->clock_in)->format('H:i')
-    : '―' }}
-〜
-{{ $pendingRequest && $pendingRequest->clock_out
-    ? \Carbon\Carbon::parse($pendingRequest->clock_out)->format('H:i')
-    : '―' }}    
+                    ? \Carbon\Carbon::parse($pendingRequest->clock_in)->format('H:i')
+                    : '―' }}
+                    〜
+                    {{ $pendingRequest && $pendingRequest->clock_out
+                    ? \Carbon\Carbon::parse($pendingRequest->clock_out)->format('H:i')
+                    : '―' }}    
                     </td>
                 </tr>
                 <tr>
@@ -66,7 +65,6 @@
                 </tr>
             </table>
 
-           
             @else
             <table class="attendance-detail-table">
             <tr>
@@ -128,12 +126,11 @@
                         </div>
                     @endif
 
-                    <button type="submit">
-                        {{ $attendance->exists ? '修正申請する' : '新規申請する' }}
-                    </button>
+                    <div class="attendance-detail-button">
+                        <button type="submit" class="btn-black">修正</button>
+                    </div>
                 </form>
             @endif
         </div>
-    </div>
 </div>
 @endsection
