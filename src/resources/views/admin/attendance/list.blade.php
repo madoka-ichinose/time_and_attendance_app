@@ -9,13 +9,22 @@
 
 @section('content')
 <div class="attendance-list">
-    <h2>📅 {{ $date->format('Y年n月j日') }}の勤怠</h2>
+    <h2> {{ $date->format('Y年n月j日') }}の勤怠</h2>
 
-    <form method="GET" action="{{ route('admin.attendance.list') }}">
-        <button type="submit" name="date" value="{{ $date->copy()->subDay()->toDateString() }}">← 前日</button>
+    <div class="attendance-day">
+        <form method="GET" action="{{ route('admin.attendance.list') }}">
+        <button type="submit" class="day-nav" name="date" value="{{ $date->copy()->subDay()->toDateString() }}">← 前日</button>
+        </form>
+
+        <div class="day-current">
+        <i class="fa-regular fa-calendar"></i>
         <span>{{ $date->format('Y/m/d') }}</span>
-        <button type="submit" name="date" value="{{ $date->copy()->addDay()->toDateString() }}">翌日 →</button>
-    </form>
+        </div>
+
+        <form method="GET" action="{{ route('admin.attendance.list') }}">
+        <button type="submit" class="day-nav" name="date" value="{{ $date->copy()->addDay()->toDateString() }}">翌日 →</button>
+        </form>
+    </div>
 
     <table>
         <thead>

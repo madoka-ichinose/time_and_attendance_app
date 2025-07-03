@@ -5,6 +5,14 @@ body {
     background-color: #f4f3f6;
 }
 
+h2 {
+    font-size: 30px;
+    font-weight: bold;
+    border-left: 5px solid #000;
+    padding-left: 10px;
+    margin-bottom: 30px;
+}
+
 /* 1. ヘッダー分のスペース確保 */
 .attendance {
     height: calc(100vh - 60px);
@@ -21,6 +29,7 @@ body {
     padding: 40px 20px;
     border-radius: 10px;
 }
+
 .attendance__logo img {
     width: 180px;
     margin-bottom: 30px;
@@ -269,6 +278,66 @@ a.attendance__detail:hover {
     background-color: #333;
 }
 
+.submit-button {
+    text-align: right;
+    margin-top: 2rem;
+}
+
+.submit-button button {
+    padding: 0.6rem 2rem;
+    background-color: black;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.approve-button {
+    background-color: #000;
+    color: #fff;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    margin-top: 24px;
+    cursor: pointer;
+}
+
+.approve-button:hover:enabled {
+    background-color: #111111;
+}
+
+/* 承認済み時に無効ボタンとしてグレー表示 */
+.approve-button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.attendance-day {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.attendance-day .day-nav {
+    color: black;
+    text-decoration: none;
+}
+
+.attendance-day .day-current {
+    display: flex;
+    font-weight: bold;
+    font-size: 20px;
+    gap: 8px;
+}
+
 /* PC (1400〜1540px) */
 @media (min-width: 1400px) and (max-width: 1540px) {
     .attendance-container {
@@ -309,6 +378,28 @@ a.attendance__detail:hover {
         width: 300px;
         height: 50px;
     }
+
+    .attendance__content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+    
+    .attendance-day {
+            gap: 40px;
+        }
+    
+    .attendance-detail-table th,
+    .attendance-detail-table td {
+            padding: 20px 30px;
+            font-size: 16px;
+        }
+    
+    .attendance-list {
+            max-width: 900px;
+            padding: 40px;
+        }
+        
 }
 
 /* タブレット (768〜850px) */
@@ -344,13 +435,57 @@ a.attendance__detail:hover {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 20px;
+        gap: 16px;
     }
 
     .btn {
         font-size: 18px;
-        width: 90%;
-        max-width: 350px;
+        width: 100%;
+        max-width: 100%;
         height: 45px;
     }
+
+        .attendance__content {
+            max-width: 95%;
+            padding: 20px;
+        }
+    
+                .attendance-day {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    /* 狭い画面でも折り返せる */
+                    gap: 12px;
+                }
+        
+                .attendance-day form {
+                    flex: 1;
+                    text-align: center;
+                }
+        
+                .attendance-day .day-current {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex: 1;
+                    font-size: 16px;
+                    gap: 6px;   }
+    
+        .attendance-detail-table th,
+        .attendance-detail-table td {
+            padding: 16px 20px;
+            font-size: 14px;
+        }
+    
+        .attendance-list {
+            max-width: 90%;
+            padding: 20px;
+        }
+    
+        .attendance-month {
+            flex-direction: column;
+            gap: 10px;
+        }
 }

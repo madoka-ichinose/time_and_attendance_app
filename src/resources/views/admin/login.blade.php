@@ -11,12 +11,6 @@
     <h2>管理者ログイン</h2>
   </div>
 
-  @if ($errors->has('admin.login'))
-    <div class="form__error">
-        {{ $errors->first('admin.login') }}
-    </div>
-  @endif
-
   <form class="form" action="{{ route('admin.login') }}" method="post">
    @csrf
     <div class="form__group">
@@ -47,6 +41,13 @@
           {{ $message }}
           @enderror
         </div>
+
+        @if ($errors->has('admin.login'))
+    <div class="form__error">
+        {{ $errors->first('admin.login') }}
+    </div>
+  @endif
+  
       </div>
     </div>
     <div class="form__button">

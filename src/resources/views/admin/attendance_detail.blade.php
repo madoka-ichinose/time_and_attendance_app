@@ -20,7 +20,7 @@
         <table class="attendance-detail-table">
             <tr>
                 <th>名前</th>
-                <td><td>{{ $attendance->user->name }}</td></td>
+                <td>{{ $attendance->user->name }}</></td>
             </tr>
             <tr>
                 <th>日付</th>
@@ -29,38 +29,48 @@
             <tr>
                 <th>出勤・退勤</th>
                 <td>
-                    <input type="time" name="clock_in" value="{{ old('clock_in', \Carbon\Carbon::parse($attendance->clock_in)->format('H:i')) }}">
+                    <input type="time" name="clock_in" value="{{ old('clock_in', $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '') }}">
                     〜
-                    <input type="time" name="clock_out" value="{{ old('clock_out', \Carbon\Carbon::parse($attendance->clock_out)->format('H:i')) }}">
+                    <input type="time" name="clock_out" value="{{ old('clock_out', $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '') }}">
+
+                    @error('clock_in')
+                    <div class="form__error">{{ $message }}</div>
+                    @enderror
+                    @error('clock_out')
+                    <div class="form__error">{{ $message }}</div>
+                    @enderror
                 </td>
             </tr>
 
-            @foreach($attendance->breaks as $index => $break)
+            @for ($i = 0; $i < 2; $i++)
             <tr>
-            <th>休憩{{ $index + 1 }}</th>
+            <th>休憩{{ $i + 1 }}</th>
             <td>
-                <input type="time" name="breaks[{{ $index }}][start_time]" value="{{ old("breaks.$index.start_time", \Carbon\Carbon::parse($break->start_time)->format('H:i')) }}">
-                〜
-                <input type="time" name="breaks[{{ $index }}][end_time]" value="{{ old("breaks.$index.end_time", \Carbon\Carbon::parse($break->end_time)->format('H:i')) }}">
-            </td>
-            </tr>
-            @endforeach
+            <input type="time" name="breaks[{{ $i }}][start_time]" 
+                   value="{{ old("breaks.$i.start_time", isset($attendance->breaks[$i]) ? \Carbon\Carbon::parse($attendance->breaks[$i]->start_time)->format('H:i') : '') }}">
+                    〜
+            <input type="time" name="breaks[{{ $i }}][end_time]" 
+                   value="{{ old("breaks.$i.end_time", isset($attendance->breaks[$i]) ? \Carbon\Carbon::parse($attendance->breaks[$i]->end_time)->format('H:i') : '') }}">
 
-            @if(count($attendance->breaks) < 2)
-            <tr>
-            <th>休憩2</th>
-            <td>
-                <input type="time" name="breaks[1][start_time]">
-                〜
-                <input type="time" name="breaks[1][end_time]">
+                   {{-- エラーメッセージ表示 --}}
+                @error("breaks.$i.start_time")
+                <div class="form__error">{{ $message }}</div>
+                @enderror
+                @error("breaks.$i.end_time")
+                <div class="form__error">{{ $message }}</div>
+                @enderror
             </td>
             </tr>
-            @endif
+            @endfor
 
             <tr>
                 <th>備考</th>
                 <td>
                     <textarea name="note" rows="3">{{ old('note', $attendance->note) }}</textarea>
+
+                    @error('note')
+                    <div class="form__error">{{ $message }}</div>
+                    @enderror
                 </td>
             </tr>
         </table>

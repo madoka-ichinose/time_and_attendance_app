@@ -11,6 +11,8 @@ use App\Models\BreakTime;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\RequestApplication;
 use App\Models\RequestBreakTime;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\AttendanceRequest; 
 
 class AdminController extends Controller
 {
@@ -21,14 +23,30 @@ class AdminController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-        $credentials['role'] = 'admin'; // 管理者のみ
+    // 入力バリデーション
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'password' => 'required',
+    ], [
+        'email.required' => 'メールアドレスを入力してください',
+        'email.email' => 'メールアドレスの形式が正しくありません',
+        'password.required' => 'パスワードを入力してください',
+    ]);
 
-        if (Auth::attempt($credentials)) {
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput();
+    }
+
+    // ログイン処理
+    $credentials = $request->only('email', 'password');
+    $credentials['role'] = 'admin'; // 管理者のみ
+
+    if (Auth::attempt($credentials)) {
         return redirect('/admin/attendance/list');
-        }
+    }
 
-        return back()->withErrors(['admin.login' => 'メールアドレスまたはパスワードが正しくありません。']);
+    // 認証失敗時のエラー表示
+    return back()->withErrors(['admin.login' => 'ログイン情報が登録されていません'])->withInput();
     }
 
     public function index(Request $request)
@@ -150,35 +168,28 @@ class AdminController extends Controller
         return view('admin.attendance_detail', compact('attendance'));
     }
 
-    // Controller メソッド修正（例）
-public function updateAttendance(Request $request, $id = null)
+    public function updateAttendance(AttendanceRequest $request, $id = null)
 {
-    $validated = $request->validate([
-        'clock_in' => 'nullable|date_format:H:i',
-        'clock_out' => 'nullable|date_format:H:i|after_or_equal:clock_in',
-        'note' => 'nullable|string|max:1000',
-        'breaks.*.start_time' => 'nullable|date_format:H:i',
-        'breaks.*.end_time' => 'nullable|date_format:H:i|after_or_equal:breaks.*.start_time',
-    ]);
+    // バリデーション済みのデータ取得
+    $data = $request->validated();
 
-    // 既存または新規の勤怠データ取得
+    // 勤怠データ取得 or 新規作成
     $attendance = Attendance::find($id);
 
     if (!$attendance) {
         $attendance = Attendance::create([
-            'user_id' => auth()->id(), // 管理者による新規作成なら、対象ユーザーIDを別途取得してください
-            'work_date' => $request->input('work_date'), // hidden項目で渡す必要あり
+            'user_id' => $request->input('user_id'),
+            'work_date' => $request->input('work_date'),
         ]);
     }
 
-    // 勤怠情報の更新
     $attendance->update([
-        'clock_in' => $attendance->work_date . ' ' . $request->input('clock_in'),
-        'clock_out' => $attendance->work_date . ' ' . $request->input('clock_out'),
+        'clock_in' => $request->input('clock_in') ? $attendance->work_date . ' ' . $request->input('clock_in') : null,
+        'clock_out' => $request->input('clock_out') ? $attendance->work_date . ' ' . $request->input('clock_out') : null,
         'note' => $request->input('note'),
     ]);
 
-    // 休憩リセット・再登録
+    // 既存の休憩データを削除
     $attendance->breaks()->delete();
 
     foreach ($request->input('breaks', []) as $break) {

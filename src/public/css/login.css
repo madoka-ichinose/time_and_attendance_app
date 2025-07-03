@@ -9,6 +9,12 @@ body {
     background-color: white;
 }
 
+h2 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
 .login-form__heading {
     margin-bottom: 20px;
     text-align: center;
