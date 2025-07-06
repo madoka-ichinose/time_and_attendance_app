@@ -8,10 +8,10 @@
 <div class="attendance-list">
     <h2 class="page-title">{{ $user->name }}さんの勤怠</h2>
 
-    <div class="navigation">
-        <a href="{{ route('admin.attendance.monthly', ['user' => $user->id, 'month' => $prevMonth]) }}" class="nav-button">← 前月</a>
-        <span class="current-month">{{ $currentMonth->format('Y/m') }}</span>
-        <a href="{{ route('admin.attendance.monthly', ['user' => $user->id, 'month' => $nextMonth]) }}" class="nav-button">翌月 →</a>
+    <div class="attendance-month">
+        <a href="{{ route('admin.attendance.monthly', ['user' => $user->id, 'month' => $prevMonth]) }}" class="month-nav">← 前月</a>
+        <span class="month-current">{{ $currentMonth->format('Y/m') }}</span>
+        <a href="{{ route('admin.attendance.monthly', ['user' => $user->id, 'month' => $nextMonth]) }}" class="month-nav">翌月 →</a>
     </div>
 
     <table class="attendance-table">

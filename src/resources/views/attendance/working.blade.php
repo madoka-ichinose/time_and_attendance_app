@@ -5,16 +5,17 @@
 @endsection
 
 @section('content')
-<div class="attendance-container">
+<div class="attendance">
+  <div class="attendance__content">
     @if (session('error'))
         <div class="alert alert-danger">
             {{ session('error') }}
         </div>
     @endif
  
-  <p class="status">出勤中</p>
-  <p class="date">{{ now()->format('Y年n月j日(D)') }}</p>
-  <p class="time">{{ \Carbon\Carbon::now()->format('H:i') }}</p>
+  <span class="attendance__status">出勤中</span>
+  <div class="attendance__date">{{ now()->format('Y年n月j日(D)') }}</div>
+  <div class="attendance__time">{{ \Carbon\Carbon::now()->format('H:i') }}</div>
   <div class="btn-group">
     <form action="{{ route('attendance.end') }}" method="POST">
       @csrf
@@ -24,6 +25,7 @@
       @csrf
       <button type="submit" class="btn btn-break">休憩入</button>
     </form>
+  </div>
   </div>
 </div>
 @endsection

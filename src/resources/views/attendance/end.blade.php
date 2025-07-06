@@ -5,19 +5,20 @@
 @endsection
 
 @section('content')
-<div class="attendance-container">
+<div class="attendance">
+<div class="attendance__content">
   
   <!-- 状態ラベル -->
-  <p class="status end">退勤済</p>
+  <span class="attendance__status">退勤済</span>
 
   <!-- 日付 -->
-  <p class="date">{{ now()->format('Y年n月j日(D)') }}</p>
+  <div class="attendance__date">{{ now()->format('Y年n月j日(D)') }}</div>
 
   <!-- 現在時刻 -->
-  <p class="time">{{ \Carbon\Carbon::now()->format('H:i') }}</p>
+  <div class="attendance__time">{{ \Carbon\Carbon::now()->format('H:i') }}</div>
 
   <!-- メッセージ -->
   <p class="message">お疲れ様でした。</p>
-
+</div>
 </div>
 @endsection

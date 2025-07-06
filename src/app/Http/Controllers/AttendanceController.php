@@ -294,10 +294,10 @@ class AttendanceController extends Controller
         'reason' => $request->input('note'),
         'applied_at' => Carbon::now(),
         'work_date' => $workDate,
-        'requested_clock_in' => $request->filled('clock_in') 
+        'clock_in' => $request->filled('clock_in') 
             ? Carbon::parse($workDate . ' ' . $request->input('clock_in'))
             : null,
-        'requested_clock_out' => $request->filled('clock_out') 
+        'clock_out' => $request->filled('clock_out') 
             ? Carbon::parse($workDate . ' ' . $request->input('clock_out'))
             : null,
     ]);
