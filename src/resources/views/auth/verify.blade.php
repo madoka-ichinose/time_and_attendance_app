@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('css')
+<link rel="stylesheet" href="{{ asset('css/common.css') }}">
 <link rel="stylesheet" href="{{ asset('css/verify.css') }}">
 @endsection
 
 @section('content')
-<title>メール認証</title>
 
 <div class="verify-container">
     <div class="verify-box">

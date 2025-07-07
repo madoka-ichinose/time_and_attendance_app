@@ -1,3 +1,7 @@
+body {
+    background-color: white;
+}
+
 .verify-container {
     display: flex;
     justify-content: center;
@@ -16,18 +20,21 @@
     font-size: 1rem;
     border: 1px solid black;
     border-radius: 5px;
-    background-color: #f5f5f5;
+    background-color: #D9D9D9;
     color: black;
     cursor: pointer;
+    margin-bottom: 70px;
+    font-weight: bold;
 }
 
 .verify-box p {
-    margin-bottom: 30px;
+    margin-bottom: 50px;
+    font-weight: bold;
 }
 
 .resend-link {
     display: inline-block;
-    margin-top: 1rem;
+    margin-top: 2rem;
     background-color: transparent;
     color: #007bff;
     border: none;

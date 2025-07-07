@@ -91,6 +91,7 @@
                                 ～ 
                                 <input type="time" name="clock_out" value="{{ old('clock_out', $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '') }}">
                             </td>
+                            
                         </tr>
 
                         @php
@@ -101,12 +102,12 @@
                         <tr>
                             <th>休憩{{ $index + 1 }}</th>
                             <td>
-                                <input type="time" name="breaks[{{ $break->id ?? 'new_'.$index }}][start]"
-                                    value="{{ $break && $break->start_time ? \Carbon\Carbon::parse($break->start_time)->format('H:i') : '' }}">
-                                ～
-                                <input type="time" name="breaks[{{ $break->id ?? 'new_'.$index }}][end]"
-                                    value="{{ $break && $break->end_time ? \Carbon\Carbon::parse($break->end_time)->format('H:i') : '' }}">
-                            </td>
+    <input type="time" name="breaks[{{ $break->id ?? 'new_'.$index }}][start_time]"
+        value="{{ old('breaks.' . ($break->id ?? 'new_'.$index) . '.start', $break && $break->start_time ? \Carbon\Carbon::parse($break->start_time)->format('H:i') : '') }}">
+    ～
+    <input type="time" name="breaks[{{ $break->id ?? 'new_'.$index }}][end_time]"
+        value="{{ old('breaks.' . ($break->id ?? 'new_'.$index) . '.end', $break && $break->end_time ? \Carbon\Carbon::parse($break->end_time)->format('H:i') : '') }}">
+</td>
                         </tr>
                         @endforeach
 
