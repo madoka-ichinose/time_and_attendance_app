@@ -35,9 +35,9 @@
                     <td>{{ $att['work_time'] }}</td>
                     <td>
                     @if (!empty($att['id']))
-                        <a href="{{ route('admin.attendance.detail', $att['id']) }}" class="detail-link">詳細</a>
+                        <a href="{{ route('admin.attendance.detail', ['user_id' => $user->id, 'work_date' => $att['date']]) }}" class="detail-link">詳細</a>
                     @else
-                        <span class="no-link">詳細</span> {{-- 勤怠がない日は非リンクで表示 --}}
+                        <span class="no-link">詳細</span>
                     @endif
                     </td>
                 </tr>

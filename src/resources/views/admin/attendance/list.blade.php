@@ -46,11 +46,7 @@
     <td>{{ $attendance['break_time'] ?? '―' }}</td>
     <td>{{ $attendance['work_time'] ?? '―' }}</td>
     <td>
-        @if (!empty($attendance['id']))
-            <a href="{{ route('admin.attendance.detail', ['attendance' => $attendance['id']]) }}">詳細</a>
-        @else
-            <span class="no-link">詳細</span>
-        @endif
+        <a href="{{ route('admin.attendance.detail', ['user_id' => $attendance['user_id'], 'work_date' => $attendance['work_date']]) }}">詳細</a>
     </td>
 </tr>
 @endforeach

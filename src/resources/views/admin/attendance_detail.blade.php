@@ -20,7 +20,7 @@
         <table class="attendance-detail-table">
             <tr>
                 <th>名前</th>
-                <td>{{ $attendance->user->name }}</></td>
+                <td>{{ optional($attendance->user)->name ?? '―' }}</td>
             </tr>
             <tr>
                 <th>日付</th>

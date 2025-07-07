@@ -95,6 +95,7 @@ class AdminController extends Controller
         'clock_out' => $clockOut,
         'break_time' => $breakTime,
         'work_time' => $workTime,
+        'work_date' => $date->toDateString(),
     ];
 });
 
@@ -162,11 +163,27 @@ class AdminController extends Controller
     }
 
 
-    public function detail(Attendance $attendance)
-    {
-        $attendance->load(['user', 'breaks']);
-        return view('admin.attendance_detail', compact('attendance'));
+    public function detail($user_id, $work_date)
+{
+    // 勤怠データの取得（なければ null）
+    $attendance = Attendance::with(['user', 'breaks'])
+        ->where('user_id', $user_id)
+        ->where('work_date', $work_date)
+        ->first();
+
+    // なければ新規オブジェクトを作成（保存はしない）
+    if (!$attendance) {
+        $attendance = new Attendance([
+            'user_id' => $user_id,
+            'work_date' => $work_date,
+        ]);
+        // ユーザー情報は別途取得
+        $attendance->setRelation('user', \App\Models\User::find($user_id));
+        $attendance->setRelation('breaks', collect());
     }
+
+    return view('admin.attendance_detail', compact('attendance'));
+}
 
     public function updateAttendance(AttendanceRequest $request, $id = null)
 {
