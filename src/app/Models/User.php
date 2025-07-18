@@ -21,6 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'email_verified_at',
+        'role',
     ];
 
     /**
@@ -44,17 +46,23 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function scopeAdmins($query)
     {
-    return $query->where('role', 'admin');
+        return $query->where('role', 'admin');
     }
 
     public function scopeUsers($query)
     {
-    return $query->where('role', 'user');
+        return $query->where('role', 'user');
     }
 
     public function attendances()
     {
-    return $this->hasMany(Attendance::class);
+        return $this->hasMany(Attendance::class);
     }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
 
 }

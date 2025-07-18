@@ -83,7 +83,6 @@ Route::middleware(['auth', 'can:isAdmin'])->prefix('admin')->name('admin.')->gro
     Route::put('/attendance/{attendance}/update', [AdminController::class, 'updateAttendance'])->name('attendance.update');
     Route::get('/attendance/staff/{user}', [AdminController::class, 'monthly'])->name('attendance.monthly'); // PG11
     Route::get('/attendance/detail/{user_id}/{work_date}', [AdminController::class, 'detail'])->name('attendance.detail'); // PG09
-    // CSV出力（非画面定義だけど実装済み）
     Route::get('/attendance/csv', [AdminController::class, 'exportCsv'])->name('attendance.csv');
 
     // 修正申請一覧・詳細・承認（PG12, PG13）

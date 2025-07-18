@@ -46,7 +46,9 @@ class AdminController extends Controller
     }
 
     // 認証失敗時のエラー表示
-    return back()->withErrors(['admin.login' => 'ログイン情報が登録されていません'])->withInput();
+    return back()->withErrors([
+        'email' => 'メールアドレスまたはパスワードが正しくありません。'
+        ])->withInput();
     }
 
     public function index(Request $request)
@@ -152,10 +154,10 @@ class AdminController extends Controller
             'id' => $record->id ?? null,
             'date' => $date->format('Y-m-d'),
             'display_date' => $date->locale('ja')->isoFormat('MM/DD（dd）'),
-            'clock_in' => $record && $record->clock_in ? Carbon::parse($record->clock_in)->format('H:i') : '--:--',
-            'clock_out' => $record && $record->clock_out ? Carbon::parse($record->clock_out)->format('H:i') : '--:--',
-            'break_time' => $record ? $this->formatBreakTime($record->breaks) : '--:--',
-            'work_time' => $record && $record->total_work_minutes ? $this->formatMinutes($record->total_work_minutes) : '--:--',
+            'clock_in' => $record && $record->clock_in ? Carbon::parse($record->clock_in)->format('H:i') : '',
+            'clock_out' => $record && $record->clock_out ? Carbon::parse($record->clock_out)->format('H:i') : '',
+            'break_time' => $record ? $this->formatBreakTime($record->breaks) : '',
+            'work_time' => $record && $record->total_work_minutes ? $this->formatMinutes($record->total_work_minutes) : '',
         ];
     }
 
@@ -165,19 +167,17 @@ class AdminController extends Controller
 
     public function detail($user_id, $work_date)
 {
-    // 勤怠データの取得（なければ null）
     $attendance = Attendance::with(['user', 'breaks'])
         ->where('user_id', $user_id)
         ->where('work_date', $work_date)
         ->first();
 
-    // なければ新規オブジェクトを作成（保存はしない）
     if (!$attendance) {
         $attendance = new Attendance([
             'user_id' => $user_id,
             'work_date' => $work_date,
         ]);
-        // ユーザー情報は別途取得
+        
         $attendance->setRelation('user', \App\Models\User::find($user_id));
         $attendance->setRelation('breaks', collect());
     }
@@ -187,10 +187,8 @@ class AdminController extends Controller
 
     public function updateAttendance(AttendanceRequest $request, $id = null)
 {
-    // バリデーション済みのデータ取得
     $data = $request->validated();
 
-    // 勤怠データ取得 or 新規作成
     $attendance = Attendance::find($id);
 
     if (!$attendance) {
@@ -201,22 +199,24 @@ class AdminController extends Controller
     }
 
     $attendance->update([
-        'clock_in' => $request->input('clock_in') ? $attendance->work_date . ' ' . $request->input('clock_in') : null,
-        'clock_out' => $request->input('clock_out') ? $attendance->work_date . ' ' . $request->input('clock_out') : null,
+        'clock_in' => $request->input('clock_in') ? $attendance->work_date->format('Y-m-d') . ' ' . $request->input('clock_in') : null,
+        'clock_out' => $request->input('clock_out') ? $attendance->work_date->format('Y-m-d') . ' ' . $request->input('clock_out') : null,
         'note' => $request->input('note'),
     ]);
-
-    // 既存の休憩データを削除
+    
     $attendance->breaks()->delete();
-
+    
     foreach ($request->input('breaks', []) as $break) {
         if (!empty($break['start_time']) && !empty($break['end_time'])) {
             $attendance->breaks()->create([
-                'start_time' => $attendance->work_date . ' ' . $break['start_time'],
-                'end_time' => $attendance->work_date . ' ' . $break['end_time'],
+                'start_time' => $attendance->work_date->format('Y-m-d') . ' ' . $break['start_time'],
+                'end_time' => $attendance->work_date->format('Y-m-d') . ' ' . $break['end_time'],
             ]);
         }
     }
+    
+    
+    
 
     $this->recalculateWorkMinutes($attendance);
 
@@ -301,7 +301,18 @@ class AdminController extends Controller
     $requests = RequestApplication::with(['user', 'attendance','breaks'])
         ->where('status', $status)
         ->latest('applied_at')
-        ->get();
+        ->get()
+        ->map(function ($req) {
+            $req->formatted_work_date = $req->work_date
+                ? \Carbon\Carbon::parse($req->work_date)->format('Y/m/d')
+                : null;
+
+            $req->formatted_applied_at = $req->applied_at
+                ? \Carbon\Carbon::parse($req->applied_at)->format('Y/m/d')
+                : null;
+
+            return $req;
+        });
 
     return view('admin.requests.index', compact('requests', 'status'));
 }

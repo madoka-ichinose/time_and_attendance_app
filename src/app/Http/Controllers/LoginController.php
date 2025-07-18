@@ -13,13 +13,11 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    // ログイン処理
     public function login(Request $request)
     {
-        // バリデーション
         $credentials = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required'],
+            'password' => ['required','min:8'],
         ]);
 
         // 認証試行

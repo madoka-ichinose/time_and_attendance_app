@@ -335,6 +335,12 @@ a.attendance__detail:hover {
     gap: 8px;
 }
 
+.attention {
+    color: red;
+    margin-top: 10px;
+    text-align: right;
+}
+
 @media (min-width: 1400px) and (max-width: 1540px) {
     .attendance-container {
         max-width: 800px;
@@ -376,26 +382,26 @@ a.attendance__detail:hover {
     }
 
     .attendance__content {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px;
-        }
-    
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px;
+    }
+
     .attendance-day {
-            gap: 40px;
-        }
-    
+        gap: 40px;
+    }
+
     .attendance-detail-table th,
     .attendance-detail-table td {
-            padding: 20px 30px;
-            font-size: 16px;
-        }
-    
+        padding: 20px 30px;
+        font-size: 16px;
+    }
+
     .attendance-list {
-            max-width: 900px;
-            padding: 40px;
-        }
-        
+        max-width: 900px;
+        padding: 40px;
+    }
+
 }
 
 /* タブレット (768〜850px) */
@@ -442,69 +448,70 @@ a.attendance__detail:hover {
     }
 
     .attendance__content {
-            max-width: 95%;
-            padding: 20px;
-        }
-    
-    .attendance-day {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    align-items: center;
-                    flex-wrap: wrap;
-                    gap: 12px;
-                }
-        
-    .attendance-day form {
-                    flex: 1;
-                    text-align: center;
-                }
-        
-    .attendance-day .day-current {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    flex: 1;
-                    font-size: 16px;
-                    gap: 6px;   }
-    
-        .attendance-detail-table th,
-        .attendance-detail-table td {
-            padding: 16px 20px;
-            font-size: 14px;
-        }
-    
-        .attendance-list {
-            max-width: 90%;
-            padding: 20px;
-        }
-    
-        .attendance-month {
-            flex-direction: row;
-                /* 横並びを維持 */
-                justify-content: space-between;
-                /* 両端配置 */
-                align-items: center;
-                gap: 10px;
-                padding: 16px;
-                font-size: 16px;
-                text-align: center;
-                flex-wrap: wrap;
-        }
+        max-width: 95%;
+        padding: 20px;
+    }
 
-        .attendance-month .month-nav {
-            font-size: 16px;
-                flex: 1;
-                text-align: center;
-        }
-        
-        .attendance-month .month-current {
-            font-size: 18px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex: 1;
-                gap: 6px;
-                text-align: center;
-        }
+    .attendance-day {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .attendance-day form {
+        flex: 1;
+        text-align: center;
+    }
+
+    .attendance-day .day-current {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        font-size: 16px;
+        gap: 6px;
+    }
+
+    .attendance-detail-table th,
+    .attendance-detail-table td {
+        padding: 16px 20px;
+        font-size: 14px;
+    }
+
+    .attendance-list {
+        max-width: 90%;
+        padding: 20px;
+    }
+
+    .attendance-month {
+        flex-direction: row;
+        /* 横並びを維持 */
+        justify-content: space-between;
+        /* 両端配置 */
+        align-items: center;
+        gap: 10px;
+        padding: 16px;
+        font-size: 16px;
+        text-align: center;
+        flex-wrap: wrap;
+    }
+
+    .attendance-month .month-nav {
+        font-size: 16px;
+        flex: 1;
+        text-align: center;
+    }
+
+    .attendance-month .month-current {
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        gap: 6px;
+        text-align: center;
+    }
 }

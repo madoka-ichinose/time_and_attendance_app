@@ -134,7 +134,6 @@ class AttendanceController extends Controller
         }
 
         if ($attendance->clock_out) {
-        // 退勤済み → end画面へリダイレクト
         return redirect()->route('attendance.end.screen');
         }
 
@@ -282,41 +281,45 @@ class AttendanceController extends Controller
     }
 
     public function submitRequest(AttendanceRequest $request, $id)
-    {
-        $attendance = Attendance::findOrFail($id);
+{
+    $attendance = Attendance::findOrFail($id);
 
-        $workDate = $attendance->work_date ?? $request->input('work_date'); // ← fallback
+    // work_dateを必ずY-m-dに正規化（Carbon or stringどちらでも対応）
+    $workDate = $attendance->work_date
+        ? Carbon::parse($attendance->work_date)->format('Y-m-d')
+        : Carbon::parse($request->input('work_date'))->format('Y-m-d');
 
-        $application = RequestApplication::create([
+    $application = RequestApplication::create([
         'attendance_id' => $attendance->id,
-        'user_id' => auth()->id(),
-        'status' => '承認待ち',
-        'reason' => $request->input('note'),
-        'applied_at' => Carbon::now(),
-        'work_date' => $workDate,
-        'clock_in' => $request->filled('clock_in') 
+        'user_id'       => auth()->id(),
+        'status'        => '承認待ち',
+        'reason'        => $request->input('note'),
+        'applied_at'    => Carbon::now(),
+        'work_date'     => $workDate,
+        'clock_in'      => $request->filled('clock_in') 
             ? Carbon::parse($workDate . ' ' . $request->input('clock_in'))
             : null,
-        'clock_out' => $request->filled('clock_out') 
+        'clock_out'     => $request->filled('clock_out') 
             ? Carbon::parse($workDate . ' ' . $request->input('clock_out'))
             : null,
     ]);
 
-    // 休憩申請も保存
+    // 休憩申請も保存（安全な日付結合）
     if ($request->has('breaks')) {
         foreach ($request->input('breaks') as $times) {
-            if (!empty($times['start']) && !empty($times['end'])) {
+            if (!empty($times['start_time']) && !empty($times['end_time'])) {
                 \App\Models\RequestBreakTime::create([
                     'request_application_id' => $application->id,
-                    'start_time' => Carbon::parse($workDate . ' ' . $times['start']),
-                    'end_time' => Carbon::parse($workDate . ' ' . $times['end']),
+                    'start_time' => Carbon::parse($workDate . ' ' . $times['start_time']),
+                    'end_time'   => Carbon::parse($workDate . ' ' . $times['end_time']),
                 ]);
             }
         }
     }
 
-    return redirect()->route('request.list')->with('success', '修正申請を送信しました。');
+    return redirect()->route('request.list')->with('success', '修正申請を送信しました');
 }
+
 
 public function store(AttendanceRequest $request)
 {
@@ -346,11 +349,11 @@ public function store(AttendanceRequest $request)
     // 休憩時間の保存
     if ($request->has('breaks')) {
         foreach ($request->input('breaks') as $times) {
-            if (!empty($times['start']) && !empty($times['end'])) {
+            if (!empty($times['start_time']) && !empty($times['end_time'])) {
                 RequestBreakTime::create([
                     'request_application_id' => $application->id,
-                    'start_time' => Carbon::parse($workDate . ' ' . $times['start']),
-                    'end_time' => Carbon::parse($workDate . ' ' . $times['end']),
+                    'start_time' => Carbon::parse($workDate . ' ' . $times['start_time']),
+                    'end_time' => Carbon::parse($workDate . ' ' . $times['end_time']),
                 ]);
             }
         }

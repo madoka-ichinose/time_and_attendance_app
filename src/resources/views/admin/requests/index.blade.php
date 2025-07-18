@@ -29,9 +29,9 @@
             <tr>
                 <td>{{ $request->status }}</td>
                 <td>{{ $request->user->name }}</td>
-                <td>{{ $request->work_date }}</td>
+                <td>{{ $request->formatted_work_date }}</td>
                 <td>{{ $request->reason }}</td>
-                <td>{{ \Carbon\Carbon::parse($request->applied_at)->format('Y/m/d H:i') }}</td>
+                <td>{{ $request->formatted_applied_at }}</td>
                 <td>
                 <a href="{{ route('admin.requests.detail', ['request' => $request->id]) }}">詳細</a>
                 </td>

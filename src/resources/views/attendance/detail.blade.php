@@ -10,9 +10,6 @@
         <h2>勤怠詳細</h2>
 
         @if ($pendingRequest)
-                <p class="text-danger" style="color: red; margin-top: 10px;">
-                    ※承認待ちのため修正はできません。
-                </p>
 
         <div class="attendance-detail">
             <table class="attendance-detail-table">
@@ -65,6 +62,10 @@
                 </tr>
             </table>
 
+            <p class="attention">
+                    ※承認待ちのため修正はできません。
+                </p>
+
             @else
             <table class="attendance-detail-table">
             <tr>
@@ -98,18 +99,28 @@
                             $breaks = $attendance->breaks->count() > 0 ? $attendance->breaks : collect([null]);
                         @endphp
 
-                        @foreach($breaks as $index => $break)
-                        <tr>
-                            <th>休憩{{ $index + 1 }}</th>
-                            <td>
-    <input type="time" name="breaks[{{ $break->id ?? 'new_'.$index }}][start_time]"
-        value="{{ old('breaks.' . ($break->id ?? 'new_'.$index) . '.start', $break && $break->start_time ? \Carbon\Carbon::parse($break->start_time)->format('H:i') : '') }}">
-    ～
-    <input type="time" name="breaks[{{ $break->id ?? 'new_'.$index }}][end_time]"
-        value="{{ old('breaks.' . ($break->id ?? 'new_'.$index) . '.end', $break && $break->end_time ? \Carbon\Carbon::parse($break->end_time)->format('H:i') : '') }}">
-</td>
-                        </tr>
-                        @endforeach
+                       
+        <tr>
+            <th>休憩</th>
+            <td>
+                <input type="time" name="breaks[0][start_time]"
+                       value="{{ old('breaks.0.start_time', isset($attendance->breaks[0]) ? \Carbon\Carbon::parse($attendance->breaks[0]->start_time)->format('H:i') : '') }}">
+                ～
+                <input type="time" name="breaks[0][end_time]"
+                       value="{{ old('breaks.0.end_time', isset($attendance->breaks[0]) ? \Carbon\Carbon::parse($attendance->breaks[0]->end_time)->format('H:i') : '') }}">
+            </td>
+        </tr>
+
+        <tr>
+            <th>休憩2</th>
+            <td>
+                <input type="time" name="breaks[1][start_time]"
+                       value="{{ old('breaks.1.start_time', isset($attendance->breaks[1]) ? \Carbon\Carbon::parse($attendance->breaks[1]->start_time)->format('H:i') : '') }}">
+                ～
+                <input type="time" name="breaks[1][end_time]"
+                       value="{{ old('breaks.1.end_time', isset($attendance->breaks[1]) ? \Carbon\Carbon::parse($attendance->breaks[1]->end_time)->format('H:i') : '') }}">
+            </td>
+        </tr>
 
                         <tr>
                             <th>備考</th>

@@ -13,7 +13,7 @@
 
         <form method="POST" action="{{ route('attendance.start') }}">
             @csrf
-            <button type="submit" class="attendance__button">出勤</button>
+            <button type="submit" id="clock-in-button"  class="attendance__button">出勤</button>
         </form>
     </div>
 </div>
