@@ -15,24 +15,19 @@ class AttendanceClockOutTest extends TestCase
     /** @test */
     public function user_can_clock_out_successfully()
     {
-        Carbon::setTestNow(Carbon::create(2025, 7, 14, 10, 0)); // 出勤時刻
+        Carbon::setTestNow(Carbon::create(2025, 7, 14, 10, 0)); 
 
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        // 出勤
         $this->post(route('attendance.start'));
 
-        // 時刻を進める（勤務中にする）
-        Carbon::setTestNow(Carbon::create(2025, 7, 14, 14, 30)); // 退勤時刻
+        Carbon::setTestNow(Carbon::create(2025, 7, 14, 14, 30)); 
 
-        // 退勤処理
         $response = $this->post(route('attendance.end'));
 
-        // ステータス確認（画面遷移）
         $response->assertRedirect(route('attendance.end.screen'));
 
-        // データ確認
         $attendance = Attendance::where('user_id', $user->id)->first();
 
         $this->assertNotNull($attendance->clock_out);
@@ -48,19 +43,17 @@ class AttendanceClockOutTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        // 出勤・退勤を事前に登録
         $attendance = Attendance::create([
             'user_id' => $user->id,
             'work_date' => Carbon::today(),
-            'clock_in' => Carbon::now()->subHours(4), // 6:00
-            'clock_out' => Carbon::now(),             // 10:00
+            'clock_in' => Carbon::now()->subHours(4), 
+            'clock_out' => Carbon::now(),             
             'total_work_minutes' => 240,
         ]);
 
-        // 一覧画面を表示
         $response = $this->get(route('attendance.list'));
 
         $response->assertStatus(200);
-        $response->assertSee('10:00'); // 退勤時刻が表示されていることを確認
+        $response->assertSee('10:00'); 
     }
 }

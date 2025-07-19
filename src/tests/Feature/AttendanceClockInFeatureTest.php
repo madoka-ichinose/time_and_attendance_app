@@ -65,10 +65,8 @@ public function clock_in_time_is_displayed_in_attendance_list_after_clock_in()
 
     $this->actingAs($user);
 
-    // 出勤処理前に勤怠レコードは作らず、出勤処理POSTで作る
     $this->post(route('attendance.start'))->assertStatus(302);
 
-    // DBのレコードを取得し、clock_inがnullでないことをまず確認
     $attendance = Attendance::where('user_id', $user->id)
         ->whereDate('work_date', Carbon::today()->toDateString())
         ->first();
@@ -78,11 +76,9 @@ public function clock_in_time_is_displayed_in_attendance_list_after_clock_in()
 
     $clockInFormatted = Carbon::parse($attendance->clock_in)->format('H:i');
 
-    // 勤怠一覧画面にアクセス
     $response = $this->get(route('attendance.list'));
     $response->assertStatus(200);
 
-    // 出勤時刻が表示されていることを確認
     $response->assertSee($clockInFormatted);
 }
 
@@ -92,7 +88,6 @@ public function clock_in_button_is_not_shown_if_already_clocked_in_and_cannot_cl
 {
     $user = User::factory()->create();
 
-    // すでに出勤済みのデータを用意
     Attendance::create([
         'user_id' => $user->id,
         'work_date' => Carbon::today()->toDateString(),

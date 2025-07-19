@@ -10,12 +10,10 @@ class AuthenticatedSessionController extends Controller
 {
     public function store(Request $request): LoginResponse
     {
-    // 認証済みだがメール未認証のユーザーにリダイレクト
     if (! $request->user()->hasVerifiedEmail()) {
         return redirect()->route('verification.notice');
     }
 
-    // 通常ログイン処理（例）
     return app(LoginResponse::class);
     }
 }

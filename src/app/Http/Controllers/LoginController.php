@@ -20,15 +20,12 @@ class LoginController extends Controller
             'password' => ['required','min:8'],
         ]);
 
-        // 認証試行
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            // ログイン成功時のリダイレクト先
             return redirect()->intended('/attendance');
         }
 
-        // 認証失敗時
         return back()->withErrors([
             'email' => 'メールアドレスまたはパスワードが正しくありません。',
         ])->onlyInput('email');

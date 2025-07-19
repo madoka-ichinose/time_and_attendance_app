@@ -40,11 +40,11 @@
         <tbody>
         @foreach ($attendances as $attendance)
 <tr>
-    <td>{{ $attendance['user_name'] ?? '―' }}</td>
-    <td>{{ $attendance['clock_in'] !== '--:--' ? $attendance['clock_in'] : '―' }}</td>
-    <td>{{ $attendance['clock_out'] !== '--:--' ? $attendance['clock_out'] : '―' }}</td>
-    <td>{{ $attendance['break_time'] ?? '―' }}</td>
-    <td>{{ $attendance['work_time'] ?? '―' }}</td>
+    <td>{{ $attendance['user_name'] ?? '' }}</td>
+    <td>{{ $attendance['clock_in'] !== '--:--' ? $attendance['clock_in'] : '' }}</td>
+    <td>{{ $attendance['clock_out'] !== '--:--' ? $attendance['clock_out'] : '' }}</td>
+    <td>{{ $attendance['break_time'] ?? '' }}</td>
+    <td>{{ $attendance['work_time'] ?? '' }}</td>
     <td>
         <a href="{{ route('admin.attendance.detail', ['user_id' => $attendance['user_id'], 'work_date' => $attendance['work_date']]) }}">詳細</a>
     </td>

@@ -18,7 +18,7 @@ class AttendanceRequestFeatureTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create([
-            'email_verified_at' => now(), // verifiedミドルウェアを通す
+            'email_verified_at' => now(), 
         ]);
     }
 

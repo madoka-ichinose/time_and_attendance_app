@@ -49,7 +49,7 @@ class EmailVerificationTest extends TestCase
         $this->actingAs($user)
             ->get('/email/verify')
             ->assertStatus(200)
-            ->assertSee('認証'); // 実際の文言に合わせて変更してください
+            ->assertSee('認証'); 
     }
 
     public function test_認証リンクをクリックすると認証され勤怠登録画面に遷移する()

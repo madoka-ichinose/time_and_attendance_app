@@ -10,7 +10,7 @@
 
     <div class="attendance-month">
         <a href="{{ route('admin.attendance.monthly', ['user' => $user->id, 'month' => $prevMonth]) }}" class="month-nav">← 前月</a>
-        <span class="month-current">{{ $currentMonth->format('Y/m') }}</span>
+        <span class="month-current"><i class="fa-regular fa-calendar"></i>{{ $currentMonth->format('Y/m') }}</span>
         <a href="{{ route('admin.attendance.monthly', ['user' => $user->id, 'month' => $nextMonth]) }}" class="month-nav">翌月 →</a>
     </div>
 
@@ -45,7 +45,7 @@
         </tbody>
     </table>
 
-    <form method="GET" action="{{ route('admin.attendance.csv') }}">
+    <form method="GET" action="{{ route('admin.attendance.csv') }}" class="csv-button-form">
         <input type="hidden" name="user_id" value="{{ $user->id }}">
         <input type="hidden" name="month" value="{{ $currentMonth->format('Y-m') }}">
         <button type="submit" class="csv-button">CSV出力</button>

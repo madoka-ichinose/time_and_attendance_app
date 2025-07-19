@@ -66,6 +66,10 @@ h2 {
     color: #fff;
     cursor: pointer;
     font-size: 24px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .login__link {
@@ -75,7 +79,6 @@ h2 {
     font-size: 20px;
 }
 
-/* --- タブレット対応（768px〜850px） --- */
 @media (min-width: 768px) and (max-width: 850px) {
     .form {
         width: 70%;

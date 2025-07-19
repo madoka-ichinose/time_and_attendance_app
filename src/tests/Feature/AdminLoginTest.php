@@ -20,7 +20,7 @@ class AdminLoginTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['email']);
-        $response->assertRedirect(); // フォームにリダイレクトされる想定
+        $response->assertRedirect(); 
     }
 
     /** @test */
@@ -38,20 +38,18 @@ class AdminLoginTest extends TestCase
     /** @test */
     public function admin_login_fails_with_incorrect_credentials()
     {
-        // 管理者レコード（正しいパスワード）を作成
         User::create([
             'name' => '管理者',
             'email' => 'admin@example.com',
             'password' => Hash::make('correctpassword'),
         ]);
 
-        // 誤ったパスワードでログイン
         $response = $this->from('/admin/login')->post('/admin/login', [
             'email' => 'admin@example.com',
             'password' => 'wrongpassword',
         ]);
 
-        $response->assertSessionHasErrors(['email']); // メールアドレスキーにエラーを返す形式
+        $response->assertSessionHasErrors(['email']); 
         $response->assertRedirect('/admin/login');
 
         $response->assertSessionHasErrors([

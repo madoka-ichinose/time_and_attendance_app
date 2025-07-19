@@ -41,7 +41,6 @@ class AttendanceRequest extends FormRequest
                 $inTime = strtotime($in);
                 $outTime = strtotime($out);
 
-                // 1. 出勤 > 退勤
                 if ($inTime >= $outTime) {
                     $validator->errors()->add('clock_in', '出勤時間もしくは退勤時間が不適切な値です');
                 }
@@ -50,12 +49,10 @@ class AttendanceRequest extends FormRequest
                     $start = isset($break['start_time']) ? strtotime($break['start_time']) : null;
                     $end = isset($break['end_time']) ? strtotime($break['end_time']) : null;
 
-                    // 2. 休憩開始が出勤前 or 退勤後
                     if ($start && ($start < $inTime || $start > $outTime)) {
                         $validator->errors()->add("breaks.$id.start_time", '休憩時間が不適切な値です');
                     }
 
-                    // 3. 休憩終了が退勤後
                     if ($end && $end > $outTime) {
                         $validator->errors()->add("breaks.$id.end_time", '休憩時間もしくは退勤時間が不適切な値です');
                     }

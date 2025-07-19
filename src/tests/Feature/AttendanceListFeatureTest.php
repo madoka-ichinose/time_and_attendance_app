@@ -17,7 +17,7 @@ class AttendanceListFeatureTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Carbon::setTestNow(Carbon::create(2025, 7, 14)); // 日付固定
+        Carbon::setTestNow(Carbon::create(2025, 7, 14)); 
     }
 
     public function test_勤怠情報が全て表示されている()
@@ -62,7 +62,7 @@ class AttendanceListFeatureTest extends TestCase
         ]);
 
         $this->actingAs($user, 'web');
-    $this->assertTrue(auth()->check()); // ← 追加
+    $this->assertTrue(auth()->check()); 
 
     $response = $this->get(route('attendance.list'));
     $response->assertStatus(200);
@@ -147,6 +147,6 @@ class AttendanceListFeatureTest extends TestCase
         $response = $this->actingAs($user, 'web')->get(route('attendance.list'));
 
         $response->assertStatus(200);
-        $response->assertSee($editUrl); // 詳細リンクのURLが含まれていることを確認
+        $response->assertSee($editUrl); 
     }
 }

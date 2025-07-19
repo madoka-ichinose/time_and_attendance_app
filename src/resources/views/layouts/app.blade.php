@@ -18,13 +18,14 @@
 
 <body>
 <header class="header">
-  <a class="header__logo" href="{{ route('attendance.show') }}">
+<a class="header__logo"
+   href="{{ Auth::check() ? (Auth::user()->role === 'admin' ? route('admin.attendance.list') : route('attendance.show')) : '#' }}">
     <img src="{{ asset('storage/images/logo.svg') }}" alt="COACHTECH">
-  </a>
+</a>
 
   <nav class="header__nav">
     <ul>
-    @if (Auth::check())
+    @if (Auth::check() && (Auth::user()->role === 'admin' || Auth::user()->hasVerifiedEmail()))
         @php $user = Auth::user(); @endphp
 
         @if ($user->role === 'admin')

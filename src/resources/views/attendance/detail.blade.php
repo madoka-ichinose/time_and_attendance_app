@@ -96,31 +96,23 @@
                         </tr>
 
                         @php
-                            $breaks = $attendance->breaks->count() > 0 ? $attendance->breaks : collect([null]);
-                        @endphp
+    $breaks = $attendance->breaks;
+    $oldBreaks = collect(old('breaks', []));
+    $maxCount = max($breaks->count(), $oldBreaks->count(), 1) + 1;
+@endphp
 
-                       
-        <tr>
-            <th>休憩</th>
-            <td>
-                <input type="time" name="breaks[0][start_time]"
-                       value="{{ old('breaks.0.start_time', isset($attendance->breaks[0]) ? \Carbon\Carbon::parse($attendance->breaks[0]->start_time)->format('H:i') : '') }}">
-                ～
-                <input type="time" name="breaks[0][end_time]"
-                       value="{{ old('breaks.0.end_time', isset($attendance->breaks[0]) ? \Carbon\Carbon::parse($attendance->breaks[0]->end_time)->format('H:i') : '') }}">
-            </td>
-        </tr>
-
-        <tr>
-            <th>休憩2</th>
-            <td>
-                <input type="time" name="breaks[1][start_time]"
-                       value="{{ old('breaks.1.start_time', isset($attendance->breaks[1]) ? \Carbon\Carbon::parse($attendance->breaks[1]->start_time)->format('H:i') : '') }}">
-                ～
-                <input type="time" name="breaks[1][end_time]"
-                       value="{{ old('breaks.1.end_time', isset($attendance->breaks[1]) ? \Carbon\Carbon::parse($attendance->breaks[1]->end_time)->format('H:i') : '') }}">
-            </td>
-        </tr>
+@for ($i = 0; $i < $maxCount; $i++)
+<tr>
+    <th>休憩{{ $i + 1 }}</th>
+    <td>
+        <input type="time" name="breaks[{{ $i }}][start_time]"
+            value="{{ old("breaks.$i.start_time", isset($breaks[$i]) ? \Carbon\Carbon::parse($breaks[$i]->start_time)->format('H:i') : '') }}">
+        ～
+        <input type="time" name="breaks[{{ $i }}][end_time]"
+            value="{{ old("breaks.$i.end_time", isset($breaks[$i]) ? \Carbon\Carbon::parse($breaks[$i]->end_time)->format('H:i') : '') }}">
+    </td>
+</tr>
+@endfor
 
                         <tr>
                             <th>備考</th>

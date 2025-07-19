@@ -16,13 +16,10 @@ class AdminAttendanceListTest extends TestCase
     {
         parent::setUp();
 
-        // シーディング
         $this->seed(\Database\Seeders\UsersTableSeeder::class);
 
-        // 基準日を固定
         Carbon::setTestNow(Carbon::create(2025, 7, 18, 9, 0, 0));
 
-        // 今日の日付に勤怠データを作成
         $users = User::where('role', 'user')->get();
         foreach ($users as $user) {
             Attendance::create([
@@ -45,7 +42,7 @@ class AdminAttendanceListTest extends TestCase
         $response = $this->actingAs($admin)->get('/admin/attendance/list');
 
         $response->assertStatus(200);
-        $response->assertSee(Carbon::today()->toDateString()); // 日付が表示されている
+        $response->assertSee(Carbon::today()->toDateString()); 
         $response->assertSee('ユーザー1');
         $response->assertSee('09:00');
         $response->assertSee('18:00');
@@ -72,7 +69,6 @@ class AdminAttendanceListTest extends TestCase
 
         $date = Carbon::yesterday()->toDateString();
 
-        // 前日の勤怠データを追加
         $users = User::where('role', 'user')->get();
         foreach ($users as $user) {
             Attendance::create([
@@ -101,7 +97,6 @@ class AdminAttendanceListTest extends TestCase
 
         $date = Carbon::tomorrow()->toDateString();
 
-        // 翌日の勤怠データを追加
         $users = User::where('role', 'user')->get();
         foreach ($users as $user) {
             Attendance::create([

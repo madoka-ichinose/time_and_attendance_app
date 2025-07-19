@@ -23,7 +23,6 @@ class AdminController extends Controller
 
     public function login(Request $request)
     {
-    // 入力バリデーション
     $validator = Validator::make($request->all(), [
         'email' => 'required|email',
         'password' => 'required',
@@ -37,15 +36,13 @@ class AdminController extends Controller
         return back()->withErrors($validator)->withInput();
     }
 
-    // ログイン処理
     $credentials = $request->only('email', 'password');
-    $credentials['role'] = 'admin'; // 管理者のみ
+    $credentials['role'] = 'admin';
 
     if (Auth::attempt($credentials)) {
         return redirect('/admin/attendance/list');
     }
 
-    // 認証失敗時のエラー表示
     return back()->withErrors([
         'email' => 'メールアドレスまたはパスワードが正しくありません。'
         ])->withInput();
@@ -66,7 +63,6 @@ class AdminController extends Controller
         $attendances = $users->map(function ($user) use ($date) {
         $attendance = $user->attendances->first();
 
-        // 勤怠データがない場合は作成
         if (!$attendance) {
         $attendance = Attendance::firstOrCreate(
             ['user_id' => $user->id, 'work_date' => $date->toDateString()],
@@ -84,13 +80,13 @@ class AdminController extends Controller
             : 0;
     });
 
-        $breakTime = $this->formatMinutes($breakMinutes);
-        $workTime = $attendance->total_work_minutes !== null
+    $breakTime = $breakMinutes > 0 ? $this->formatMinutes($breakMinutes) : '';
+    $workTime = $attendance->total_work_minutes > 0
         ? $this->formatMinutes($attendance->total_work_minutes)
-        : '--:--';
+        : '';
 
         return [
-        'id' => $attendance->id, // ← 常にあるようになる
+        'id' => $attendance->id,
         'user_id' => $user->id,
         'user_name' => $user->name,
         'clock_in' => $clockIn,
@@ -118,7 +114,6 @@ class AdminController extends Controller
         return $this->formatMinutes($total);
     }
 
-    // 勤務・休憩時間の整形メソッド（コピペOK）
     private function formatMinutes($minutes)
     {
         $hours = floor($minutes / 60);
@@ -135,7 +130,6 @@ class AdminController extends Controller
         $startOfMonth = $currentMonth->copy()->startOfMonth();
         $endOfMonth = $currentMonth->copy()->endOfMonth();
 
-        // 勤怠情報（該当月）を取得して日付でキー付け
         $attendanceRaw = Attendance::where('user_id', $user->id)
         ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
         ->with('breaks')
@@ -144,7 +138,6 @@ class AdminController extends Controller
             return Carbon::parse($item->work_date)->format('Y-m-d');
         });
 
-        // 表示用データに整形
         $attendances = [];
 
         for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {

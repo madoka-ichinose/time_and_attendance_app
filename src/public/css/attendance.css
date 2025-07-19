@@ -14,7 +14,7 @@ h2 {
 }
 
 .attendance {
-    height: 100vh;
+    min-height: calc(100vh - 80px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -269,11 +269,35 @@ a.attendance__detail:hover {
     border-radius: 5px;
     text-decoration: none;
     font-weight: bold;
+    font-size: 22px;
     transition: background-color 0.3s ease;
 }
 
 .btn-black:hover {
     background-color: #333;
+}
+
+.month-current i {
+    margin-right: 6px;
+    color: #333;
+    font-size: 18px; 
+}
+
+.csv-button-form {
+    text-align: right;
+   
+}
+
+.csv-button {
+    background-color: black;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 22px;
+    transition: background-color 0.3s ease;
 }
 
 .submit-button {
@@ -404,7 +428,6 @@ a.attendance__detail:hover {
 
 }
 
-/* タブレット (768〜850px) */
 @media (min-width: 768px) and (max-width: 850px) {
     .attendance-container {
         max-width: 90%;
@@ -435,15 +458,21 @@ a.attendance__detail:hover {
 
     .btn-group {
         display: flex;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        gap: 16px;
+        gap: 20px;
+        margin-top: 20px;
+        flex-wrap: no-wrap;
+    }
+
+    .btn-group form {
+        flex: 0 0 auto;
+        width: auto;   
     }
 
     .btn {
         font-size: 18px;
-        width: 100%;
-        max-width: 100%;
+        width: 120px;
         height: 45px;
     }
 
@@ -488,9 +517,7 @@ a.attendance__detail:hover {
 
     .attendance-month {
         flex-direction: row;
-        /* 横並びを維持 */
         justify-content: space-between;
-        /* 両端配置 */
         align-items: center;
         gap: 10px;
         padding: 16px;

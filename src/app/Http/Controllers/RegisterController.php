@@ -30,13 +30,9 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        // メール認証通知を送信
     $user->sendEmailVerificationNotification();
-
-    // ログインさせる（任意）
     Auth::login($user);
 
-    // 認証メール送信後は認証待ち画面へリダイレクト
     return redirect()->route('verification.notice');
 
     }

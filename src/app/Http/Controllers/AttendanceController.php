@@ -20,18 +20,15 @@ class AttendanceController extends Controller
     $user = auth()->user();
     $today = Carbon::today();
 
-    // 今日の出勤記録を取得
     $attendance = Attendance::where('user_id', $user->id)
         ->whereDate('work_date', $today)
         ->first();
 
     if ($attendance) {
         if ($attendance->clock_out) {
-            // 退勤済 → end 画面を表示
             return view('attendance.end');
         }
 
-        // 休憩中か確認
         $isOnBreak = BreakTime::where('attendance_id', $attendance->id)
             ->whereNull('end_time')
             ->exists();
@@ -40,11 +37,9 @@ class AttendanceController extends Controller
             return view('attendance.break');
         }
 
-        // 出勤済・退勤前 → working 画面を表示
         return view('attendance.working');
     }
 
-    // 出勤前なら出勤ボタンのある画面へ
     return view('attendance.start');
 }
 
@@ -54,7 +49,6 @@ class AttendanceController extends Controller
         $user = auth()->user();
         $today = Carbon::today();
 
-        // 出勤済みか確認（1日1回制限）
         $alreadyStarted = Attendance::where('user_id', $user->id)
         ->whereDate('work_date', $today)
         ->exists();
@@ -137,7 +131,6 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.end.screen');
         }
 
-    // 休憩中か確認
         $isOnBreak = BreakTime::where('attendance_id', $attendance->id)
         ->whereNull('end_time')
         ->exists();
@@ -187,18 +180,14 @@ class AttendanceController extends Controller
     $user = auth()->user();
     $today = Carbon::today();
 
-    // 現在の月を取得（パラメータがない場合は今日）
     $targetDate = Carbon::createFromDate($year ?? $today->year, $month ?? $today->month, 1);
 
-    // 前月・翌月の計算
     $prevMonth = $targetDate->copy()->subMonth();
     $nextMonth = $targetDate->copy()->addMonth();
 
-    // 対象月の全日付を取得
     $startOfMonth = $targetDate->copy()->startOfMonth();
     $endOfMonth = $targetDate->copy()->endOfMonth();
 
-    // 対象月の勤怠記録を取得
     $attendancesRaw = Attendance::with('breaks')
         ->where('user_id', $user->id)
         ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
@@ -207,7 +196,6 @@ class AttendanceController extends Controller
             return Carbon::parse($item->work_date)->format('Y-m-d');
         });
 
-    // カレンダーのように全日分ループ
     $attendances = [];
     for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
         $record = $attendancesRaw->get($date->format('Y-m-d'));
@@ -232,7 +220,6 @@ class AttendanceController extends Controller
     ]);
     }
 
-// 勤務・休憩時間の整形メソッド
     private function formatMinutes($minutes)
     {
     $hours = floor($minutes / 60);
@@ -255,7 +242,6 @@ class AttendanceController extends Controller
     $user = Auth::user();
     $workDate = Carbon::parse($date)->toDateString();
 
-    // 勤怠取得 or 新規
     $attendance = Attendance::with('breaks')
         ->where('user_id', $user->id)
         ->whereDate('work_date', $workDate)
@@ -268,10 +254,9 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // 承認待ちの修正申請（最新1件）を取得
     $pendingRequest = \App\Models\RequestApplication::with('breaks')
     ->where('user_id', $user->id)
-    ->where('work_date', $workDate) // ← work_dateで探す
+    ->where('work_date', $workDate)
     ->where('status', '承認待ち')
     ->latest('applied_at')
     ->first();
@@ -284,7 +269,6 @@ class AttendanceController extends Controller
 {
     $attendance = Attendance::findOrFail($id);
 
-    // work_dateを必ずY-m-dに正規化（Carbon or stringどちらでも対応）
     $workDate = $attendance->work_date
         ? Carbon::parse($attendance->work_date)->format('Y-m-d')
         : Carbon::parse($request->input('work_date'))->format('Y-m-d');
@@ -304,7 +288,6 @@ class AttendanceController extends Controller
             : null,
     ]);
 
-    // 休憩申請も保存（安全な日付結合）
     if ($request->has('breaks')) {
         foreach ($request->input('breaks') as $times) {
             if (!empty($times['start_time']) && !empty($times['end_time'])) {
@@ -326,17 +309,14 @@ public function store(AttendanceRequest $request)
     $user = Auth::user();
     $workDate = Carbon::parse($request->input('work_date'))->toDateString();
 
-    // 勤怠データが既にあるか確認（あるなら attendance_id に紐付け、ないなら null）
     $attendance = Attendance::where('user_id', $user->id)
         ->whereDate('work_date', $workDate)
         ->first();
 
     $attendanceId = $attendance ? $attendance->id : null;
-    // 勤怠データはここでは作成しない（承認時に作成 or 上書きする）
 
-    // 修正申請作成
     $application = RequestApplication::create([
-        'attendance_id' => $attendanceId, // 勤怠データがない場合はnull
+        'attendance_id' => $attendanceId, 
         'user_id' => $user->id,
         'status' => '承認待ち',
         'reason' => $request->input('note'),
@@ -346,7 +326,6 @@ public function store(AttendanceRequest $request)
         'clock_out' => $request->filled('clock_out') ? Carbon::parse($workDate . ' ' . $request->input('clock_out')) : null,
     ]);
 
-    // 休憩時間の保存
     if ($request->has('breaks')) {
         foreach ($request->input('breaks') as $times) {
             if (!empty($times['start_time']) && !empty($times['end_time'])) {
@@ -368,7 +347,6 @@ public function store(AttendanceRequest $request)
     $user = Auth::user();
     $attendance = Attendance::with('breaks')->findOrFail($id);
 
-    // 修正申請があるか取得
     $pendingRequest = \App\Models\RequestApplication::with('breaks')
         ->where('attendance_id', $attendance->id)
         ->where('status', '承認待ち')

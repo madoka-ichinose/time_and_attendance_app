@@ -24,8 +24,8 @@ class AttendancePageTest extends TestCase
         $response->assertStatus(200); 
 
         $response->assertSeeInOrder([
-            Carbon::now()->format('Y年n月j日'), // 例: 2025年7月13日
-            Carbon::now()->format('H:i'),      // 例: 15:33
+            Carbon::now()->format('Y年n月j日'), 
+            Carbon::now()->format('H:i'),      
         ]);
     }
 }
