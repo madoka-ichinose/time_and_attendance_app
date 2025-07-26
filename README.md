@@ -20,15 +20,28 @@
 1. リポジトリをクローン
    - git clone git@github.com:madoka-ichinose/time_and_attendance_app.git
    - cd time_and_attendance_app
+   - docker-compose up -d --build
 2. .env設定
+   - sudo chmod -R 777 src/*を実行
+   - cd src
    - cp .env.example .env
+   - docker-compose exec php bash
    - php artisan key:generate
 3. パッケージインストール
    - composer install
-   - npm install && npm run dev
+   - npm install && npm run dev(package.json が存在するディレクトリで実行)
 4. マイグレーション＆シーディング
-   - php artisan migrate --seed
-5. サーバー起動
+   - php artisan migrate --seed(エラーの際は、php artisan migrate:fresh --seed
+)
+1. サーバー起動
    - php artisan serve
-6. doctrine/dbal パッケージをインストール
+2. doctrine/dbal パッケージをインストール
    - composer require doctrine/dbal
+
+## ER図  
+
+- index.drawio.pngに記載
+
+## URL　　
+
+- 開発環境：http://localhost/
