@@ -42,13 +42,17 @@
     </table>
 </div>
     @if ($request->status === '承認待ち')
+    <div class="approve-container">
         <form method="POST" action="{{ route('admin.requests.approve', ['request' => $request->id]) }}">
             @csrf
             @method('PUT')
             <button type="submit" class="approve-button">承認</button>
         </form>
+    <div>
     @else
+    <div class="approve-container">
         <button class="approve-button" disabled>承認済み</button>
+    </div>
     @endif
 </div>
 @endsection

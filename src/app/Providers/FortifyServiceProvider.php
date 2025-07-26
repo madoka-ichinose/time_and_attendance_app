@@ -32,14 +32,11 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::registerView(function () {
                      return view('auth.register');
                  });
-            
-                 Fortify::ignoreRoutes();
 
-                // Fortifyの認証機能登録
-                Fortify::loginView(function () {
-                // 一般ユーザーのログイン画面のBladeを返す
-                return view('auth.login');
-                });
+        Fortify::loginView(function () {
+    return view(request()->is('admin/*') ? 'admin.login' : 'auth.login');
+});
+
 
                 // 管理者用はカスタムルートで登録
             

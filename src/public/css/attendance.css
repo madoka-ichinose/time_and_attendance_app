@@ -336,6 +336,10 @@ a.attendance__detail:hover {
     cursor: not-allowed;
 }
 
+.approve-container {
+    text-align: right;
+}
+
 .attendance-day {
     display: flex;
     justify-content: space-between;
