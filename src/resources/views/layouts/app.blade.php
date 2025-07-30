@@ -20,7 +20,7 @@
 <header class="header">
 <a class="header__logo"
    href="{{ Auth::check() ? (Auth::user()->role === 'admin' ? route('admin.attendance.list') : route('attendance.show')) : '#' }}">
-    <img src="{{ asset('storage/images/logo.svg') }}" alt="COACHTECH">
+    <img src="{{ asset('images/logo.svg') }}" alt="COACHTECH">
 </a>
 
   <nav class="header__nav">

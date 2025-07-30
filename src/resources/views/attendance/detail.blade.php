@@ -96,10 +96,10 @@
                         </tr>
 
                         @php
-    $breaks = $attendance->breaks;
-    $oldBreaks = collect(old('breaks', []));
-    $maxCount = max($breaks->count(), $oldBreaks->count(), 1) + 1;
-@endphp
+                        $breaks = $attendance->breaks;
+                        $oldBreaks = collect(old('breaks', []));
+                        $maxCount = max($breaks->count(), $oldBreaks->count(), 1) + 1;
+                    @endphp
 
 @for ($i = 0; $i < $maxCount; $i++)
 <tr>
